@@ -17,10 +17,11 @@
 #         alpha_2=within-individual correlation
 # delta: Effect of intervention in log odds ratio (only needed when outcome is binary)
 # beta: Vector of period effects (only needed when outcome is binary)
-# tot.var: total variance of the random effects (only needed when outcome is continuous)
+# phi: scale parameter (only needed when outcome is binary)
+# tot.var: total variance of the outcome (only needed when outcome is continuous)
 
 VARd<-function(n,l,m,t,subcluster=c("cohort","cross-sectional"),indiv=c("cohort","cross-sectional"),family=c("gaussian","binomial"),
-                 alpha,delta=NA,beta=NA,tot.var=1){
+                 alpha,delta=NA,beta=NA,phi=1,tot.var=1){
   
   # elements of efficiency calculation
   scheme<-rep(n/(t-1),t-1)
@@ -75,7 +76,7 @@ VARd<-function(n,l,m,t,subcluster=c("cohort","cross-sectional"),indiv=c("cohort"
       
       Omega<-Omega + t(Z)%*%invV%*%Z
     }
-    vardelta<-solve(Omega)[1,1]
+    vardelta<-phi*solve(Omega)[1,1]
   }
  
   if (family=="gaussian"){
