@@ -1,6 +1,6 @@
 # Application results from "" 
 
-setwd("/Users/kdavis07/Dropbox/SW-CRT Methods Development/1_Multilevel_SS/RCode/Functions")
+setwd("/Users/kdavis07/Documents/GitHub/multilevel_crt_samplesize")
 
 ####################################################################################################################################
 #################################### IMPORTING FUNCTIONS ###########################################################################
@@ -110,6 +110,7 @@ l<-9                                  #Number of subclusters per cluster (L)
 t<-5                                  #Number of periods (T)
 bs<-log(0.05/(1-0.05))                #Period 1 effect as a function of the prevalence. Here the prevalence is 0.05.
 beta<-cumsum(c(bs,-0.1,-0.1/2,-0.1/(2^2),-0.1/(2^3)))[1:t] #Period effects. Here we assume a slightly decreasing effect.
+phi<-1                                #Scale parameter
 ER1<-0.05                             #Type I error rate for t-test
 df<-n-2                               #Degrees of freedom for t-test
 ###
@@ -117,7 +118,7 @@ df<-n-2                               #Degrees of freedom for t-test
 m0<-seq(1,200,by=1)                   #Varying number of participants within a subcluster (N)
 for(i in 1:length(m0)){
   m<-m0[i]
-  vard<-VARd(n=n,l=l,m=m,t=t,subcluster="cohort",indiv="cross-sectional",family="binomial",alpha=alpha,delta=delta,beta=beta)
+  vard<-VARd(n=n,l=l,m=m,t=t,subcluster="cohort",indiv="cross-sectional",family="binomial",alpha=alpha,delta=delta,beta=beta,phi=phi)
   power0<-study_power(delta=delta,var.delta=vard,typeI.error=ER1,df=df)
   
   if(i==1) {
@@ -141,7 +142,7 @@ beta<-cumsum(c(bs,-1,-1/2,-1/(2^2),-1/(2^3)))[1:t] #Assuming a larger decreasing
 m0<-seq(1,200,by=1)                   #Varying number of participants within a subcluster (N)
 for(i in 1:length(m0)){
   m<-m0[i]
-  vard<-VARd(n=n,l=l,m=m,t=t,subcluster="cohort",indiv="cross-sectional",family="binomial",alpha=alpha,delta=delta,beta=beta)
+  vard<-VARd(n=n,l=l,m=m,t=t,subcluster="cohort",indiv="cross-sectional",family="binomial",alpha=alpha,delta=delta,beta=beta,phi=phi)
   power0<-study_power(delta=delta,var.delta=vard,typeI.error=ER1,df=df)
   
   if(i==1) {
@@ -163,7 +164,7 @@ beta<-cumsum(c(bs,-0.01,-0.01/2,-0.01/(2^2),-0.01/(2^3)))[1:t] #Assuming a small
 m0<-seq(1,200,by=1)                   #Varying number of participants within a subcluster (N)
 for(i in 1:length(m0)){
   m<-m0[i]
-  vard<-VARd(n=n,l=l,m=m,t=t,subcluster="cohort",indiv="cross-sectional",family="binomial",alpha=alpha,delta=delta,beta=beta)
+  vard<-VARd(n=n,l=l,m=m,t=t,subcluster="cohort",indiv="cross-sectional",family="binomial",alpha=alpha,delta=delta,beta=beta,phi=phi)
   power0<-study_power(delta=delta,var.delta=vard,typeI.error=ER1,df=df)
   
   if(i==1) {
