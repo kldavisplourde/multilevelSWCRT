@@ -1,4 +1,4 @@
-# Application results from "" 
+# Application results from "Sample size calculation for stepped wedge cluster randomized trials with multiple levels of clustering." 
 
 setwd("/Users/kdavis07/Documents/GitHub/multilevel_crt_samplesize")
 
