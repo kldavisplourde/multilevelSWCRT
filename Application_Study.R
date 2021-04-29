@@ -30,7 +30,8 @@ ER1<-0.05                         #Type I error rate for t-test
 df<-n-2                           #Degrees of freedom for t-test
 ###
 
-m0<-seq(50,100,by=1)                #Varying number of participants within a subcluster (N)
+# Assuming closed-cohort on all levels.
+m0<-seq(50,100,by=1)                #Varying number of participants within a subcluster (N) 
 for(i in 1:length(m0)){
   m<-m0[i]
   vard<-VARd(n=n,l=l,m=m,t=t,subcluster="cohort",indiv="cohort",family="gaussian",alpha=alpha,tot.var=tot.var)
@@ -45,6 +46,24 @@ for(i in 1:length(m0)){
 plot(m0,power)
 power[21] #87.5%
 m0[21] #N = 70 participants per subcluster in order to achieve 87.5% power
+
+
+# Assuming cross-sectional on all levels.
+m0<-seq(50,100,by=1)                #Varying number of participants within a subcluster (N) 
+for(i in 1:length(m0)){
+  m<-m0[i]
+  vard<-VARd(n=n,l=l,m=m,t=t,subcluster="cross-sectional",indiv="cross-sectional",family="gaussian",alpha=alpha,tot.var=tot.var)
+  power0<-study_power(delta=delta,var.delta=vard,typeI.error=ER1,df=df)
+  
+  if(i==1) {
+    power<-power0
+  } else {
+    power<-c(power,power0)
+  }
+}
+plot(m0,power)
+power[51] #87.5%
+m0[51] #N = 100 participants per subcluster in order to achieve 87.5% power
 
 ####################################################################################################################################
 
