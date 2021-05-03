@@ -135,7 +135,7 @@ x*design.effect/(l*m) #100 clusters are needed to attain 87.5% power
 ## A. Outcome is binary and we will use the canonical logit link
 ### INPUTS ###
 delta<-log(0.7)                       #Intervention effect of interest on logit link scale
-alpha<-c(0.008,0.007,0.0035,0.004)     #ICCs in the following order:
+alpha<-c(0.008,0.007,0.0035,0.004,0.1)     #ICCs in the following order:
 #                                       alpha_0=within subcluster within period
 #                                       rho_0=between subcluster within period
 #                                       rho_1=between subcluster between period         
@@ -156,6 +156,42 @@ m0<-seq(1,200,by=1)                   #Varying number of participants within a s
 for(i in 1:length(m0)){
   m<-m0[i]
   vard<-VARd(n=n,l=l,m=m,t=t,subcluster="cohort",indiv="cross-sectional",family="binomial",alpha=alpha,delta=delta,beta=beta,phi=phi)
+  power0<-study_power(delta=delta,var.delta=vard,typeI.error=ER1,df=df)
+  
+  if(i==1) {
+    power<-power0
+  } else {
+    power<-c(power,power0)
+  }
+}
+plot(m0,power)
+power[42] #89.5% power
+m0[42]    #N = 42 participants per subcluster in order to achieve 89.5% power
+
+
+# Assuming closed-cohort on all levels.
+m0<-seq(1,200,by=1)                   #Varying number of participants within a subcluster (N)
+for(i in 1:length(m0)){
+  m<-m0[i]
+  vard<-VARd(n=n,l=l,m=m,t=t,subcluster="cohort",indiv="cohort",family="binomial",alpha=alpha,delta=delta,beta=beta,phi=phi)
+  power0<-study_power(delta=delta,var.delta=vard,typeI.error=ER1,df=df)
+  
+  if(i==1) {
+    power<-power0
+  } else {
+    power<-c(power,power0)
+  }
+}
+plot(m0,power)
+power[51] #89.4% power
+m0[51]    #N = 51 participants per subcluster in order to achieve 89.4% power
+
+
+# Assuming cross-sectional on all levels.
+m0<-seq(1,200,by=1)                   #Varying number of participants within a subcluster (N)
+for(i in 1:length(m0)){
+  m<-m0[i]
+  vard<-VARd(n=n,l=l,m=m,t=t,subcluster="cross-sectional",indiv="cross-sectional",family="binomial",alpha=alpha,delta=delta,beta=beta,phi=phi)
   power0<-study_power(delta=delta,var.delta=vard,typeI.error=ER1,df=df)
   
   if(i==1) {
@@ -191,6 +227,40 @@ for(i in 1:length(m0)){
 plot(m0,power)
 power[139] #89.5% power
 m0[139]    #N = 139 participants per subcluster in order to achieve 89.5% power
+
+# Assuming closed-cohort on all levels.
+m0<-seq(1,200,by=1)                   #Varying number of participants within a subcluster (N)
+for(i in 1:length(m0)){
+  m<-m0[i]
+  vard<-VARd(n=n,l=l,m=m,t=t,subcluster="cohort",indiv="cohort",family="binomial",alpha=alpha,delta=delta,beta=beta,phi=phi)
+  power0<-study_power(delta=delta,var.delta=vard,typeI.error=ER1,df=df)
+  
+  if(i==1) {
+    power<-power0
+  } else {
+    power<-c(power,power0)
+  }
+}
+plot(m0,power)
+power[169] #89.5% power
+m0[169]    #N = 169 participants per subcluster in order to achieve 89.5% power
+
+# Assuming cross-sectional on all levels.
+m0<-seq(1,200,by=1)                   #Varying number of participants within a subcluster (N)
+for(i in 1:length(m0)){
+  m<-m0[i]
+  vard<-VARd(n=n,l=l,m=m,t=t,subcluster="cross-sectional",indiv="cross-sectional",family="binomial",alpha=alpha,delta=delta,beta=beta,phi=phi)
+  power0<-study_power(delta=delta,var.delta=vard,typeI.error=ER1,df=df)
+  
+  if(i==1) {
+    power<-power0
+  } else {
+    power<-c(power,power0)
+  }
+}
+plot(m0,power)
+power[139] #89.5% power
+m0[139]    #N = 139 participants per subcluster in order to achieve 89.5% power
 ######################################
 
 ### Smaller decreasing time effect
@@ -213,6 +283,41 @@ for(i in 1:length(m0)){
 plot(m0,power)
 power[37] #89.3% power
 m0[37]    #N = 37 participants per subcluster in order to achieve 89.3% power
+
+
+# Assuming closed-cohort on all levels.
+m0<-seq(1,200,by=1)                   #Varying number of participants within a subcluster (N)
+for(i in 1:length(m0)){
+  m<-m0[i]
+  vard<-VARd(n=n,l=l,m=m,t=t,subcluster="cohort",indiv="cohort",family="binomial",alpha=alpha,delta=delta,beta=beta,phi=phi)
+  power0<-study_power(delta=delta,var.delta=vard,typeI.error=ER1,df=df)
+  
+  if(i==1) {
+    power<-power0
+  } else {
+    power<-c(power,power0)
+  }
+}
+plot(m0,power)
+power[46] #89.7% power
+m0[46]    #N = 46 participants per subcluster in order to achieve 89.7% power
+
+# Assuming cross-sectional on all levels.
+m0<-seq(1,200,by=1)                   #Varying number of participants within a subcluster (N)
+for(i in 1:length(m0)){
+  m<-m0[i]
+  vard<-VARd(n=n,l=l,m=m,t=t,subcluster="cross-sectional",indiv="cross-sectional",family="binomial",alpha=alpha,delta=delta,beta=beta,phi=phi)
+  power0<-study_power(delta=delta,var.delta=vard,typeI.error=ER1,df=df)
+  
+  if(i==1) {
+    power<-power0
+  } else {
+    power<-c(power,power0)
+  }
+}
+plot(m0,power)
+power[37] #89.2% power
+m0[37]    #N = 37 participants per subcluster in order to achieve 89.2% power
 
 ####################################################################################################################################
 ####################################################################################################################################
