@@ -1,4 +1,5 @@
-# Application results from "Sample size calculation for stepped wedge cluster randomized trials with multiple levels of clustering." 
+# Application study from "Sample size considerations for stepped wedge designs with multiple levels of clustering" 
+# by Davis-Plourde, Taljaard, and Li
 
 setwd("/Users/kdavis07/Documents/GitHub/multilevel_crt_samplesize")
 
@@ -135,7 +136,7 @@ x*design.effect/(l*m) #100 clusters are needed to attain 87.5% power
 ## A. Outcome is binary and we will use the canonical logit link
 ### INPUTS ###
 delta<-log(0.7)                       #Intervention effect of interest on logit link scale
-alpha<-c(0.008,0.007,0.0035,0.004,0.1)     #ICCs in the following order:
+alpha<-c(0.008,0.007,0.0035,0.004,0.1) #ICCs in the following order:
 #                                       alpha_0=within subcluster within period
 #                                       rho_0=between subcluster within period
 #                                       rho_1=between subcluster between period         

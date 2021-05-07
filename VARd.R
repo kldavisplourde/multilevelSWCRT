@@ -17,7 +17,7 @@
 #         alpha_2=within-individual correlation
 # delta: Effect of intervention in log odds ratio (only needed when outcome is binary)
 # beta: Vector of period effects (only needed when outcome is binary)
-# phi: scale parameter (only needed when outcome is binary)
+# phi: common dispersion (only needed when outcome is binary)
 # tot.var: total variance of the outcome (only needed when outcome is continuous)
 
 VARd<-function(n,l,m,t,subcluster=c("cohort","cross-sectional"),indiv=c("cohort","cross-sectional"),family=c("gaussian","binomial"),
