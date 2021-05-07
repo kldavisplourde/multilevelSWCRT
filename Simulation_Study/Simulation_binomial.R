@@ -1,5 +1,5 @@
 # Generating correlated binary outcomes under GLMM for multilevel stepped wedge trials
-# Kendra Plourde, January-February 2021
+# Kendra Plourde 2021
 
 # INPUTS
 # n: Number of clusters (level 3)
@@ -32,7 +32,7 @@ if (is.na(ncores)) ncores<-1
 registerDoMC(cores=ncores)
 
 # define scenarios
-scenarios <- read.table("parameters_binomial_type1error.txt", header=TRUE, sep="")
+scenarios <- read.table("parameters_binomial_power.txt", header=TRUE, sep="")
 scenarios <- subset(scenarios, scenario == k)
 
 ######   SCENARIO X   ######
