@@ -1,4 +1,4 @@
-# Approximation of the variance of the intervention effect for multilevel cluster randomized trials 
+# Approximation of the variance of the intervention effect for multilevel stepped wedge cluster randomized trials 
 # with continuous and binary (with logit link) outcomes.
 
 # INPUTS
