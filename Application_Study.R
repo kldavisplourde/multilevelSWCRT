@@ -49,7 +49,7 @@ power[21] #87.5%
 m0[21] #N = 70 participants per subcluster in order to achieve 87.5% power
 
 
-# Assuming closed-cohort on all levels.
+# Assuming closed-cohort on individual level only.
 m0<-seq(50,100,by=1)                #Varying number of participants within a subcluster (N) 
 for(i in 1:length(m0)){
   m<-m0[i]
