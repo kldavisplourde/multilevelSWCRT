@@ -46,8 +46,8 @@ for(i in 1:length(m0)){
   }
 }
 plot(m0,power)
-power[21] #87.5%
-m0[21] #N = 70 participants per subcluster in order to achieve 87.5% power
+power[21] #87.4%
+m0[21] #N = 70 participants per subcluster in order to achieve 87.4% power
 
 
 # Assuming closed-cohort on all levels.
@@ -64,8 +64,8 @@ for(i in 1:length(m0)){
   }
 }
 plot(m0,power)
-power[29] #87.5%
-m0[29] #N = 78 participants per subcluster in order to achieve 87.5% power
+power[29] #87.6%
+m0[29] #N = 78 participants per subcluster in order to achieve 87.6% power
 
 
 # Assuming cross-sectional on all levels.
