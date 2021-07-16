@@ -3,7 +3,7 @@
 
 # INPUTS
 # n: Number of clusters (I)
-# l: Number of subclusters per cluster (L)
+# l: Number of subclusters per cluster (K)
 # m: Number of participants per subcluster (N)
 # t: Number of periods (T)
 # U: Design constant

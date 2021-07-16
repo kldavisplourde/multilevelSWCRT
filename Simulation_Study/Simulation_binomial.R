@@ -2,10 +2,10 @@
 # Kendra Davis-Plourde
 
 # INPUTS
-# n: Number of clusters (level 3)
-# l: Number of clinics within each cluster (level 2)
-# m: Number of participants within each clinic (level 1)
-# t: Number of periods
+# n: Number of clusters (I)
+# l: Number of clinics within each cluster (K)
+# m: Number of participants within each clinic (N)
+# t: Number of periods (T)
 # alpha: Vector of correlations
 #         alpha_0=within clinic within period
 #         rho_0=between clinic within period

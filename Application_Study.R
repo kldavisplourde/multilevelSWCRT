@@ -24,7 +24,7 @@ alpha<-c(0.046,0.04,0.02,0.023,0.1) #ICCs in the following order:
 #                                             alpha_1=within subcluster between period
 #                                             alpha_2=within-individual correlation
 n<-100                            #Number of clusters (I)
-l<-17                             #Number of subclusters per cluster (L)
+l<-17                             #Number of subclusters per cluster (K)
 #m<-                              #Number of participants per subcluster (N)
 t<-6                              #Number of periods (T)
 tot.var<-2.5                      #Total variance under continuous outcome
@@ -121,7 +121,7 @@ t<-6                                        #Number of periods (T)
 S<-t-1                                      #Number of steps
 c<-1                                        #Number of measures taken at each step
 b<-1                                        #Number of measures taken at baseline
-l<-17                                       #Number of subclusters per cluster (L)
+l<-17                                       #Number of subclusters per cluster (K)
 m<-78                                       #Number of participants per subcluster (N)
 ####
 
@@ -145,7 +145,7 @@ alpha<-c(0.008,0.007,0.0035,0.004,0.1) #ICCs in the following order:
 #                                       alpha_1=within subcluster between period
 #                                       alpha_2=within-individual correlation
 n<-24                                 #Number of clusters (I)
-l<-5                                  #Number of subclusters per cluster (L)
+l<-5                                  #Number of subclusters per cluster (K)
 #m<-                                  #Number of participants per subcluster (N)
 t<-5                                  #Number of periods (T)
 bs<-log(0.05/(1-0.05))                #Period 1 effect as a function of the prevalence. Here the prevalence is 0.05.

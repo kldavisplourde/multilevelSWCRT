@@ -2,7 +2,7 @@
 # Created by Kendra Davis-Plourde
 
 # INPUTS
-# l: Number of subclusters per cluster (L)
+# l: Number of subclusters per cluster (K)
 # m: Number of participants per subcluster (N)
 # t: Number of periods (T)
 # S: Number of steps
