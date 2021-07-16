@@ -1,5 +1,6 @@
 # Comparing the variance approximation of the intervention effect estimator (VARd) using individual level data versus 
 # using cluster-period means approach under a binary outcome with canonical logit link and assuming common dispersion=1.
+# Created by Kendra Davis-Plourde
 
 library(optimbase)
 

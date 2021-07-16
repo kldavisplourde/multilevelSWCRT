@@ -1,4 +1,5 @@
 # Generating power of clinical trial
+# Created by Kendra Davis-Plourde
 
 # INPUTS
 # delta: Intervention effect on link function scale

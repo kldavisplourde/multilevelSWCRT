@@ -1,5 +1,5 @@
 # Generating correlated continuous outcomes under LMM for multilevel stepped wedge trials
-# Kendra Plourde 2021
+# Kendra Davis-Plourde
 
 # INPUTS
 # n: Number of clusters (level 3)

@@ -1,5 +1,6 @@
 # Application study from "Sample size considerations for stepped wedge designs with multiple levels of clustering" 
-# by Davis-Plourde, Taljaard, and Li
+# by Kendra Davis-Plourde, Monica Taljaard, and Fan Li
+# Code created by Kendra Davis-Plourde
 
 setwd("/Users/kdavis07/Documents/GitHub/multilevel_crt_samplesize")
 

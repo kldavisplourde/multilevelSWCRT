@@ -1,4 +1,5 @@
-# Design effect for multilevel cluster randomized trials with a continuous outcome
+# Design effect for multilevel cluster randomized trials with a continuous outcome.
+# Created by Kendra Davis-Plourde
 
 # INPUTS
 # n: Number of clusters (I)

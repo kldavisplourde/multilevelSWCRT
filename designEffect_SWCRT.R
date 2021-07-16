@@ -1,4 +1,5 @@
-# Design effect for multilevel stepped wedge cluster randomized trials (SW-CRT) with a continuous outcome
+# Design effect for multilevel stepped wedge cluster randomized trials (SW-CRT) with a continuous outcome.
+# Created by Kendra Davis-Plourde
 
 # INPUTS
 # l: Number of subclusters per cluster (L)
