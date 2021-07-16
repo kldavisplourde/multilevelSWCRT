@@ -31,25 +31,6 @@
 setwd("/Users/kdavis07/Documents/GitHub/multilevel_crt_samplesize/")
 source("study_power.R")          #Importing function for generating power
 
-n<-8                            #Number of clusters (I)
-t<-3                            #Number of periods (T)
-l<-4                            # Average number of subclusters per cluster (K)
-m<-5
-CV.l<-0.25
-CV.m<-0.25
-family<-"gaussian"
-alpha<-c(0.046,0.04,0.02,0.023) #ICCs in the following order:
-#                                             alpha_0=within subcluster within period
-#                                             rho_0=between subcluster within period
-#                                             rho_1=between subcluster between period         
-#                                             alpha_1=within subcluster between period
-delta<-0.1
-tot.var<-1                      #Total variance under continuous outcome
-typeI.error<-0.05                         #Type I error rate for t-test
-df<-n-2                           #Degrees of freedom for t-test
-nsims<-100
-seed<-2764
-
 VARd_Power_uneqCP <- function(n, t, l, m, CV.l=0, CV.m=0, family="gaussian", alpha, delta, beta=rep(0, t), phi=1, tot.var=1, typeI.error=0.05, df=n-2, nsims=1000, seed=2021){
   
   # elements of efficiency calculation
@@ -83,6 +64,7 @@ VARd_Power_uneqCP <- function(n, t, l, m, CV.l=0, CV.m=0, family="gaussian", alp
   }
   
   
+  # Generate correlation matrix (for Gaussian)
   R <- function(ki, mi) {
     B <- (1 + (mi-1)*alpha[1] + mi*(ki-1)*alpha[2])/(ki*mi)
     C <- (alpha[4] + (mi-1)*alpha[4] + mi*(ki-1)*alpha[3])/(ki*mi)
@@ -91,6 +73,14 @@ VARd_Power_uneqCP <- function(n, t, l, m, CV.l=0, CV.m=0, family="gaussian", alp
       
     return(R)
   }
+  
+  # Generate variance components using given correlations (for binomial)
+  sig2_e<-pi^2/3                                                        #variance of standard logistic distribution
+  sig2_b<-sig2_e*alpha[3]/(1-alpha[1])                                  #within cluster
+  sig2_c<-sig2_e*(alpha[4]-alpha[3])/(1-alpha[1])                       #within subcluster
+  sig2_s<-sig2_e*(alpha[2]-alpha[3])/(1-alpha[1])                       #within cluster within period
+  sig2_p<-sig2_e*(alpha[1]-alpha[4]-alpha[2]+alpha[3])/(1-alpha[1])     #within subcluster within period
+  sig2_g<-0                                                             #within person
   
   
   # calculate variance
@@ -124,11 +114,14 @@ VARd_Power_uneqCP <- function(n, t, l, m, CV.l=0, CV.m=0, family="gaussian", alp
           mu <- c(Z%*%c(delta,beta))
           Omega <- Omega + (t(Z)%*%invRi%*%Z)/tot.var
        } else if (family=="binomial"){     # binomial with logit link
-          gmu <- c(X%*%c(delta,beta))
-          mu <- plogis(gmu)
-          W <- diag(sqrt(mu*(1-mu))) %*% invRi %*% diag(sqrt(mu*(1-mu)))
-          Omega <- Omega + (t(X)%*%W%*%X)/phi
-        }
+          gmu<-c(Z%*%c(delta,beta))
+          E.Gprime<-as.vector(2+exp(0.5*(sig2_b+sig2_c+sig2_s+sig2_p+sig2_g))*(exp(-gmu)+exp(gmu)))
+           
+          V<-(E.Gprime/(l_var[i]*m_var[i])+sig2_p/l_var[i]+sig2_s)*diag(t)+(sig2_b+sig2_c/l_var[i]+sig2_g/(l_var[i]*m_var[i]))*matrix(1,nrow=t,ncol=t)
+          invV<-solve(V)
+           
+          Omega<-Omega + (t(Z)%*%invV%*%Z)/phi
+         }
       }
       
       # delta <- c(solve(Omega,Ry))[1]   # check whether this is close to the assumed delta
@@ -162,6 +155,30 @@ ER1<-0.05                         #Type I error rate for t-test
 VARd_Power_uneqCP(n=n, t=t, l=l, m=m, CV.l=0, CV.m=0, family="gaussian", alpha=alpha, delta=delta, tot.var=tot.var, typeI.error=ER1, df=n-2, nsims=100, seed=2021)
 # Matches our application study!!! We get the same variance and power estimates!
 
+#Testing with CVs
 VARd_Power_uneqCP(n=n, t=t, l=l, m=m, CV.l=0.25, CV.m=0.75, family="gaussian", alpha=alpha, delta=delta, tot.var=tot.var, typeI.error=ER1, df=n-2, nsims=100, seed=2021)
 
+
+# From application study
+delta<-log(0.7)                       #Intervention effect of interest on logit link scale
+alpha<-c(0.008,0.007,0.0035,0.004,0.1) #ICCs in the following order:
+#                                       alpha_0=within subcluster within period
+#                                       rho_0=between subcluster within period
+#                                       rho_1=between subcluster between period         
+#                                       alpha_1=within subcluster between period
+#                                       alpha_2=within-individual correlation
+n<-24                                 #Number of clusters (I)
+l<-5                                  #Number of subclusters per cluster (K)
+m<-42                                  #Number of participants per subcluster (N)
+t<-5                                  #Number of periods (T)
+bs<-log(0.05/(1-0.05))                #Period 1 effect as a function of the prevalence. Here the prevalence is 0.05.
+beta<-cumsum(c(bs,-0.1,-0.1/2,-0.1/(2^2),-0.1/(2^3)))[1:t] #Period effects. Here we assume a slightly decreasing effect.
+phi<-1                                #Scale parameter
+ER1<-0.05                             #Type I error rate for t-test
+df<-n-2                               #Degrees of freedom for t-test
+VARd_Power_uneqCP(n=n, t=t, l=l, m=m, CV.l=0, CV.m=0, family="binomial", alpha=alpha, delta=delta, beta=beta, phi=phi, typeI.error=ER1, df=n-2, nsims=100, seed=2021)
+# Matches our application study!!! We get the same variance and power estimates!
+
+#Testing with CVs
+VARd_Power_uneqCP(n=n, t=t, l=l, m=m, CV.l=0.25, CV.m=0.25, family="binomial", alpha=alpha, delta=delta, beta=beta, phi=phi, typeI.error=ER1, df=n-2, nsims=100, seed=2021)
 
