@@ -3,8 +3,8 @@
 # Code based on SWD_GEEPower_cp_variable_v2.R by Zibo Tian, modified by Kendra Davis-Plourde.
 
 # INPUT
-# I: Number of clusters
-# J: Number of periods
+# n: Number of clusters (I)
+# t: Number of periods (T)
 # K: Average number of individuals (K*N) at each cluster-period
 # CV: Degree of between-cluster imbalance measured by coefficient of variation
 # design: Data set that describes the study design
@@ -31,12 +31,12 @@
 # Output: An array of power estimated under both z-test and t-test
 ########################################################################################################################
 
-swdgeepower_var <- function(I, J, K, CV=0, design=NULL, family="gaussian", link=NULL, windep=FALSE, corstr, delta, beta=rep(0, J), phi=1, size=0.05, alpha, df=I-2, nsims=1000, seed=2021){
+swdgeepower_var <- function(n, t, K, CV=0, design=NULL, family="gaussian", link=NULL, windep=FALSE, corstr, delta, beta=rep(0, t), phi=1, size=0.05, alpha, df=n-2, nsims=1000, seed=2021){
   
   #check design
-  if (nrow(design)==I & ncol(design)==J){
+  if (nrow(design)==n & ncol(design)==t){
     trtSeq <- design
-    itrt <- I
+    itrt <- n
   } else {
     stop("Design is Not Consistent with Cluster/Period Number")
   }
@@ -60,14 +60,14 @@ swdgeepower_var <- function(I, J, K, CV=0, design=NULL, family="gaussian", link=
   }
   
   # function to account for between-cluster imbalance 
-  n.variable <- function(I, J, CV, K) {
+  n.variable <- function(n, t, CV, K) {
     if (CV == 0) {
-      return(rep(K,I))
+      return(rep(K,n))
     } else {
-      N.raw <- rgamma(I, 1/CV^2, rate = 1/(K * CV^2))
+      N.raw <- rgamma(n, 1/CV^2, rate = 1/(K * CV^2))
       N <- as.integer(N.raw * (K/mean(N.raw)))
       N[N < 5] = 5
-      return(rep(N,I))
+      return(rep(N,n))
     }
   }
   
@@ -86,9 +86,9 @@ swdgeepower_var <- function(I, J, K, CV=0, design=NULL, family="gaussian", link=
   
   R <- function(ni) {
     if (corstr=="nested exchangeable"){
-      R <- diag(J)*((1+(ni-1)*alpha0)/ni-alpha1) + matrix(1,J,J)*alpha1
+      R <- diag(t)*((1+(ni-1)*alpha0)/ni-alpha1) + matrix(1,t,t)*alpha1
     } else if (corstr=="exponential decay"){
-      R <- diag(J)*((1+(ni-1)*tau)/ni) + (ar1(J, rho)-diag(J))*tau
+      R <- diag(t)*((1+(ni-1)*tau)/ni) + (ar1(t, rho)-diag(t))*tau
     }
     return(R)
   }
@@ -100,22 +100,21 @@ swdgeepower_var <- function(I, J, K, CV=0, design=NULL, family="gaussian", link=
     
     set.seed(seed + s)
     #simulated baseline cluster sizes under given CV
-    n_var <- n.variable(I, J, CV, K)
+    n_var <- n.variable(n, t, CV, K)
     
     
     if (windep==FALSE){    # model-based varaince
       
       # elements of power calculation
-      Omega <- matrix(0,J+1,J+1)
-      # Ry <- matrix(0,J+1,1)
+      Omega <- matrix(0,t+1,t+1)
       
       for (i in 1:itrt){    # loop through each unique cluster
         
         # design matrix
         # put trt indicator at the first column for convenience
-        period <- rep(1:J)
+        period <- rep(1:t)
         X <- rep(trtSeq[i,])
-        for (j in 1:J){
+        for (j in 1:t){
           X <- cbind(X, as.numeric(period==j))
         }
         
@@ -171,12 +170,12 @@ swdgeepower_var <- function(I, J, K, CV=0, design=NULL, family="gaussian", link=
     } else if (windep==TRUE){    # robust sandwich varaince with an independence working correlation matrix
       
       # elements of power calculation
-      Omega0 <- matrix(0,J+1,J+1)
-      Omega1 <- matrix(0,J+1,J+1)
+      Omega0 <- matrix(0,t+1,t+1)
+      Omega1 <- matrix(0,t+1,t+1)
       
       #Independence working correlation 
       invI <- function(ni) {
-        return(diag(J)*ni)
+        return(diag(t)*ni)
       }
       
       for (i in 1:itrt){    # loop through each unique cluster
@@ -186,9 +185,9 @@ swdgeepower_var <- function(I, J, K, CV=0, design=NULL, family="gaussian", link=
         
         # design matrix
         # put trt indicator at the first column for convenience
-        period <- rep(1:J)
+        period <- rep(1:t)
         X <- rep(trtSeq[i,])
-        for (j in 1:J){
+        for (j in 1:t){
           X <- cbind(X, as.numeric(period==j))
         }
         
@@ -260,7 +259,7 @@ swdgeepower_var <- function(I, J, K, CV=0, design=NULL, family="gaussian", link=
     t1_power <- pt(qt(size/2,df=df1) + abs(delta)/sqrt(mean(vardelta)), df=df1)
     
     # t-test power with df = # clusters minus p
-    # df2 <- I - (J+1)
+    # df2 <- n - (t+1)
     # t2_power <- pt(qt(size/2,df=df2) + abs(delta)/sqrt(vardelta), df=df2)
     
     # final results
@@ -274,22 +273,22 @@ swdgeepower_var <- function(I, J, K, CV=0, design=NULL, family="gaussian", link=
 # ---------------------------------------------------------------------------------
 
 # examples
-I = 8; J = 9; Jn = 6; K = 100
+n = 8; t = 9; tn = 6; K = 100
 CV=0
 
-tnew = J+Jn
-design <- matrix(0,J-1,J)
+tnew = t+tn
+design <- matrix(0,t-1,t)
 design[upper.tri(design)] <- 1
-design <- cbind(design, matrix(1,J-1,tnew-J))
+design <- cbind(design, matrix(1,t-1,tnew-t))
 bas = 0.25
 end = 0.27   # time trend at the last period
-p=seq(bas,end,length.out=J+Jn)
+p=seq(bas,end,length.out=t+tn)
 beta = log(p/(1-p))
 delta =  log(0.35/(1-0.35)) - beta[tnew]
 alpha = c(0.04, 0.02)
-swdgeepower_var(I=I, J=J+Jn, K=K, CV=CV, design=design, family="binomial", link="logit", corstr="nested exchangeable", windep=FALSE, delta=delta, beta=beta, phi=1, size=0.025, alpha=alpha)
-swdgeepower_var(I=I, J=J+Jn, K=K, CV=CV, design=design, family="binomial", link="logit", corstr="nested exchangeable", windep=TRUE, delta=delta, beta=beta, phi=1, size=0.025, alpha=alpha)
+swdgeepower_var(n=n, t=t+tn, K=K, CV=CV, design=design, family="binomial", link="logit", corstr="nested exchangeable", windep=FALSE, delta=delta, beta=beta, phi=1, size=0.025, alpha=alpha)
+swdgeepower_var(n=n, t=t+tn, K=K, CV=CV, design=design, family="binomial", link="logit", corstr="nested exchangeable", windep=TRUE, delta=delta, beta=beta, phi=1, size=0.025, alpha=alpha)
 
-swdgeepower_var(I=I, J=J+Jn, K=K, CV=1, design=design, family="binomial", link="logit", corstr="nested exchangeable", windep=FALSE, delta=delta, beta=beta, phi=1, size=0.025, alpha=alpha)
-swdgeepower_var(I=I, J=J+Jn, K=K, CV=1, design=design, family="binomial", link="logit", corstr="nested exchangeable", windep=TRUE, delta=delta, beta=beta, phi=1, size=0.025, alpha=alpha)
+swdgeepower_var(n=n, t=t+tn, K=K, CV=1, design=design, family="binomial", link="logit", corstr="nested exchangeable", windep=FALSE, delta=delta, beta=beta, phi=1, size=0.025, alpha=alpha)
+swdgeepower_var(n=n, t=t+tn, K=K, CV=1, design=design, family="binomial", link="logit", corstr="nested exchangeable", windep=TRUE, delta=delta, beta=beta, phi=1, size=0.025, alpha=alpha)
 
