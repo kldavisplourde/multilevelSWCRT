@@ -1,15 +1,14 @@
 ########################################################################################################################
-# Function of power calculations for cross-sectional SWD with different responses, using cluster-period approach, 
-# when between-cluster imbalance presents (Version 2: MC calculation of average variance of treatment effect 
-# estimator and then a one-time calclulation of power)
+# Monte Carlo function for generating power for multilevel cross-sectional SWCRTs with unequal cluster-period sizes (between-cluster imbalance). 
+# Code based on SWD_GEEPower_cp_variable_v2.R by Zibo Tian, modified by Kendra Davis-Plourde.
 
 # INPUT
 # I: Number of clusters
 # J: Number of periods
-# K: Average number of individuals at each cluster-period cell
+# K: Average number of individuals (K*N) at each cluster-period
 # CV: Degree of between-cluster imbalance measured by coefficient of variation
 # design: Data set that describes the study design
-# family: "gaussian", "binomial", or "poisson"
+# family: "gaussian" or "binomial"
 # link: "identity", "logit", or "log"
 #       (default: link = "identity" for family = "gaussian";
 #                 link = "logit" for family = "binomial";
@@ -27,7 +26,7 @@
 #        (within-time, decay) for exponential decay,
 # df: degrees of freedom for t-test
 # nsims: Number of simulation runs to compute the variance of treatment effect estimator
-# seed: a seed to control reproduceable output
+# seed: a seed to control reproducible output
 
 # Output: An array of power estimated under both z-test and t-test
 ########################################################################################################################
