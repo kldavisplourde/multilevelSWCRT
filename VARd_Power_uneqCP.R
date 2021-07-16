@@ -50,7 +50,7 @@ df<-n-2                           #Degrees of freedom for t-test
 nsims<-100
 seed<-2764
 
-VARd_Power_unequalCP <- function(n, t, l, m, CV.l=0, CV.m=0, family="gaussian", alpha, delta, beta=rep(0, t), phi=1, tot.var=1, typeI.error=0.05, df=n-2, nsims=1000, seed=2021){
+VARd_Power_uneqCP <- function(n, t, l, m, CV.l=0, CV.m=0, family="gaussian", alpha, delta, beta=rep(0, t), phi=1, tot.var=1, typeI.error=0.05, df=n-2, nsims=1000, seed=2021){
   
   # elements of efficiency calculation
   scheme<-rep(n/(t-1),t-1)
@@ -100,7 +100,7 @@ VARd_Power_unequalCP <- function(n, t, l, m, CV.l=0, CV.m=0, family="gaussian", 
     set.seed(seed + s)
     #simulated baseline cluster sizes under given CV
     l_var <- l.variable(n, t, CV.l, l)
-    m_var <- n.variable(n, t, CV.m, m)
+    m_var <- m.variable(n, t, CV.m, m)
     
     # elements of power calculation
     Omega <- matrix(0,t+1,t+1)
@@ -159,9 +159,9 @@ m<-70                              #Number of participants per subcluster (N)
 t<-6                              #Number of periods (T)
 tot.var<-2.5                      #Total variance under continuous outcome
 ER1<-0.05                         #Type I error rate for t-test
-VARd_Power_unequalCP(n=n, t=t, l=l, m=m, CV.l=0, CV.m=0, family="gaussian", alpha=alpha, delta=delta, tot.var=tot.var, typeI.error=ER1, df=n-2, nsims=100, seed=2021)
+VARd_Power_uneqCP(n=n, t=t, l=l, m=m, CV.l=0, CV.m=0, family="gaussian", alpha=alpha, delta=delta, tot.var=tot.var, typeI.error=ER1, df=n-2, nsims=100, seed=2021)
 # Matches our application study!!! We get the same variance and power estimates!
 
-VARd_Power_unequalCP(n=n, t=t, l=l, m=m, CV.l=0.25, CV.m=0.75, family="gaussian", alpha=alpha, delta=delta, tot.var=tot.var, typeI.error=ER1, df=n-2, nsims=100, seed=2021)
+VARd_Power_uneqCP(n=n, t=t, l=l, m=m, CV.l=0.25, CV.m=0.75, family="gaussian", alpha=alpha, delta=delta, tot.var=tot.var, typeI.error=ER1, df=n-2, nsims=100, seed=2021)
 
 
