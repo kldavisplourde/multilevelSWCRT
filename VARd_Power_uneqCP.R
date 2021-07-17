@@ -87,11 +87,13 @@ VARd_Power_uneqCP <- function(n, t, l, m, CV.l=0, CV.m=0, family="gaussian", alp
   # calculate variance
   for (s in 1:nsims) {
     vardelta <- NULL
+    medianCP.size <- NULL
     
     set.seed(seed + s)
     #simulated baseline cluster sizes under given CV
     l_var <- l.variable(n, t, CV.l, l)
     m_var <- m.variable(n, t, CV.m, m)
+    CP.size <- median(l_var*m_var)
     
     # elements of power calculation
     Omega <- matrix(0,t+1,t+1)
@@ -127,14 +129,14 @@ VARd_Power_uneqCP <- function(n, t, l, m, CV.l=0, CV.m=0, family="gaussian", alp
       
       # delta <- c(solve(Omega,Ry))[1]   # check whether this is close to the assumed delta
       vardelta <- c(vardelta, solve(Omega)[1,1])    # var of the trt effect estimator
-    
+      medianCP.size <- c(medianCP.size, CP.size)
     #print(vardelta)
     
     # t-test
       t1_power <- study_power(delta=delta, var.delta=mean(vardelta), typeI.error=typeI.error, df=df)
   }
   
-  return(data.frame(var.delta=mean(vardelta), power=t1_power))
+  return(data.frame(var.delta=mean(vardelta), power=t1_power, CP.size=medianCP.size))
 }
 
 
@@ -189,15 +191,15 @@ scenarios.Gaus <- read.table("Simulation_Study/parameters_gaussian_power.txt", h
 
 CV.l<-0;CV.m<-0;seed<-7735        # this should match our original predicted power
 CV.l<-0;CV.m<-0.25;seed<-8393
-CV.l<-0;CV.m<-0.75;seed<-753
-CV.l<-0.25;CV.m<-0;seed<-237
-CV.l<-0.75;CV.m<-0;seed<-193
+CV.l<-0;CV.m<-0.75;seed<-753 
+CV.l<-0.25;CV.m<-0;seed<-237 
+CV.l<-0.75;CV.m<-0;seed<-193 
 CV.l<-0.25;CV.m<-0.25;seed<-6299 
-CV.l<-0.25;CV.m<-0.75;seed<-2734
-CV.l<-0.75;CV.m<-0.25;seed<-3704
+CV.l<-0.25;CV.m<-0.75;seed<-2734 
+CV.l<-0.75;CV.m<-0.25;seed<-3704 
 CV.l<-0.75;CV.m<-0.75;seed<-53401
 
-Gaussian.results<- matrix(0,nrow(scenarios.Gaus),2)
+Gaussian.results<- matrix(0,nrow(scenarios.Gaus),3)
 for(i in 1:nrow(scenarios.Gaus)){
   scenarios <- subset(scenarios.Gaus, scenario == i)
   scenario	<- i
@@ -215,6 +217,7 @@ for(i in 1:nrow(scenarios.Gaus)){
   
   Gaussian.results[i,1] <- as.numeric(sqrt(it.k[1]))
   Gaussian.results[i,2] <- as.numeric(it.k[2])
+  Gaussian.results[i,3] <- as.numeric(it.k[3])
 }
 Gaussian.results
 
