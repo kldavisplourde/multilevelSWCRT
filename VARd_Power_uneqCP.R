@@ -87,16 +87,19 @@ VARd_Power_uneqCP <- function(n, t, l, m, CV.l=0, CV.m=0, family="gaussian", alp
   # calculate variance
   for (s in 1:nsims) {
     vardelta <- NULL
-    medianCP.size <- NULL
+    meanCP.size <- NULL
+    totalSample <- NULL
     
     set.seed(seed + s)
     #simulated baseline cluster sizes under given CV
     l_var <- l.variable(n, t, CV.l, l)
     m_var <- m.variable(n, t, CV.m, m)
-    CP.size <- median(l_var*m_var)
+    CP.size <- mean(l_var*m_var)
     
     # elements of power calculation
     Omega <- matrix(0,t+1,t+1)
+    
+    size <- 0
       
     for (i in 1:n){    # loop through each unique cluster
       
@@ -111,6 +114,8 @@ VARd_Power_uneqCP <- function(n, t, l, m, CV.l=0, CV.m=0, family="gaussian", alp
       if (min(eigen(R(l_var[i], m_var[i]))$values)<0){
         stop(paste0("Correlation Structure of cluster ", i, " is Not Positive Definite"))
       }
+      
+      size <- size + l_var[i]*m_var[i]
         
       # unique marginal means
       if (family=="gaussian"){             # gaussian with identity link
@@ -129,14 +134,15 @@ VARd_Power_uneqCP <- function(n, t, l, m, CV.l=0, CV.m=0, family="gaussian", alp
       
       # delta <- c(solve(Omega,Ry))[1]   # check whether this is close to the assumed delta
       vardelta <- c(vardelta, solve(Omega)[1,1])    # var of the trt effect estimator
-      medianCP.size <- c(medianCP.size, CP.size)
+      meanCP.size <- c(meanCP.size, CP.size)
+      totalSample <- c(totalSample, size)
     #print(vardelta)
     
     # t-test
       t1_power <- study_power(delta=delta, var.delta=mean(vardelta), typeI.error=typeI.error, df=df)
   }
   
-  return(data.frame(var.delta=mean(vardelta), power=t1_power, CP.size=medianCP.size))
+  return(data.frame(var.delta=mean(vardelta), power=t1_power, CP.size=meanCP.size, total.size=totalSample))
 }
 
 
@@ -190,7 +196,7 @@ VARd_Power_uneqCP(n=n, t=t, l=l, m=m, CV.l=0.25, CV.m=0.25, family="binomial", a
 scenarios.Gaus <- read.table("Simulation_Study/parameters_gaussian_power.txt", header=TRUE, sep="")
 
 CV.l<-0;CV.m<-0;seed<-7735        # this should match our original predicted power
-CV.l<-0;CV.m<-0.25;seed<-8393
+CV.l<-0;CV.m<-0.25;seed<-8393 
 CV.l<-0;CV.m<-0.75;seed<-753 
 CV.l<-0.25;CV.m<-0;seed<-237 
 CV.l<-0.75;CV.m<-0;seed<-193 
@@ -199,7 +205,7 @@ CV.l<-0.25;CV.m<-0.75;seed<-2734
 CV.l<-0.75;CV.m<-0.25;seed<-3704 
 CV.l<-0.75;CV.m<-0.75;seed<-53401
 
-Gaussian.results<- matrix(0,nrow(scenarios.Gaus),3)
+Gaussian.results<- matrix(0,nrow(scenarios.Gaus),4)
 for(i in 1:nrow(scenarios.Gaus)){
   scenarios <- subset(scenarios.Gaus, scenario == i)
   scenario	<- i
@@ -218,6 +224,7 @@ for(i in 1:nrow(scenarios.Gaus)){
   Gaussian.results[i,1] <- as.numeric(sqrt(it.k[1]))
   Gaussian.results[i,2] <- as.numeric(it.k[2])
   Gaussian.results[i,3] <- as.numeric(it.k[3])
+  Gaussian.results[i,4] <- as.numeric(it.k[4])
 }
 Gaussian.results
 
