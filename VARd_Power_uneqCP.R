@@ -48,6 +48,7 @@ VARd_Power_uneqCP <- function(n, t, l, m, CV.l=0, CV.m=0, family="gaussian", alp
     } else {
       Nsubc.raw <- rgamma(n, 1/CV.l^2, rate = 1/(l * CV.l^2))
       Nsubc <- as.integer(Nsubc.raw * (l/mean(Nsubc.raw)))
+      Nsubc[Nsubc < 2] = 2
       return(Nsubc)
     }
   }
@@ -96,7 +97,7 @@ VARd_Power_uneqCP <- function(n, t, l, m, CV.l=0, CV.m=0, family="gaussian", alp
     Omega <- matrix(0,t+1,t+1)
       
     for (i in 1:n){    # loop through each unique cluster
-        
+      
       # design matrix
       # put trt indicator at the first column for convenience
       period <- rep(1:t)
@@ -181,4 +182,73 @@ VARd_Power_uneqCP(n=n, t=t, l=l, m=m, CV.l=0, CV.m=0, family="binomial", alpha=a
 
 #Testing with CVs
 VARd_Power_uneqCP(n=n, t=t, l=l, m=m, CV.l=0.25, CV.m=0.25, family="binomial", alpha=alpha, delta=delta, beta=beta, phi=phi, typeI.error=ER1, df=n-2, nsims=100, seed=2021)
+
+
+# SE and Power for simulation study
+scenarios.Gaus <- read.table("Simulation_Study/parameters_gaussian_power.txt", header=TRUE, sep="")
+
+CV.l<-0;CV.m<-0;seed<-7735        # this should match our original predicted power
+CV.l<-0;CV.m<-0.25;seed<-8393
+CV.l<-0;CV.m<-0.75;seed<-753
+CV.l<-0.25;CV.m<-0;seed<-237
+CV.l<-0.75;CV.m<-0;seed<-193
+CV.l<-0.25;CV.m<-0.25;seed<-6299 
+CV.l<-0.25;CV.m<-0.75;seed<-2734
+CV.l<-0.75;CV.m<-0.25;seed<-3704
+CV.l<-0.75;CV.m<-0.75;seed<-53401
+
+Gaussian.results<- matrix(0,nrow(scenarios.Gaus),2)
+for(i in 1:nrow(scenarios.Gaus)){
+  scenarios <- subset(scenarios.Gaus, scenario == i)
+  scenario	<- i
+  n <- scenarios$n                         #Number of clusters
+  l <- scenarios$l                         #Number of clinics
+  m <- scenarios$m                         #Number of observations within a clinic
+  t <- scenarios$t                         #Number of time-points
+  delta <- scenarios$delta
+  bs <- scenarios$bs
+  beta <- cumsum(c(bs,0.1,0.1*0.5,0.1*(0.5^2),0.1*(0.5^3),0.1*(0.5^4),0.1*(0.5^5)))[1:t]
+  alpha<-c(scenarios$alpha0,scenarios$rho0,scenarios$rho1,scenarios$alpha1)
+  tot.var <- scenarios$tot.var
+  
+  it.k<-VARd_Power_uneqCP(n=n, t=t, l=l, m=m, CV.l=CV.l, CV.m=CV.m, family="gaussian", alpha=alpha, delta=delta, tot.var=tot.var, typeI.error=0.05, df=n-2, nsims=100, seed=seed+i)
+  
+  Gaussian.results[i,1] <- as.numeric(sqrt(it.k[1]))
+  Gaussian.results[i,2] <- as.numeric(it.k[2])
+}
+Gaussian.results
+
+
+
+scenarios.Bin <- read.table("Simulation_Study/parameters_binomial_power.txt", header=TRUE, sep="")
+
+CV.l<-0;CV.m<-0;seed<-7735        # this should match our original predicted power
+CV.l<-0;CV.m<-0.25;seed<-8393
+CV.l<-0;CV.m<-0.75;seed<-753
+CV.l<-0.25;CV.m<-0;seed<-237
+CV.l<-0.75;CV.m<-0;seed<-193
+CV.l<-0.25;CV.m<-0.25;seed<-6299 
+CV.l<-0.25;CV.m<-0.75;seed<-2734
+CV.l<-0.75;CV.m<-0.25;seed<-3704
+CV.l<-0.75;CV.m<-0.75;seed<-53401
+
+Binomial.results<- matrix(0,nrow(scenarios.Bin),2)
+for(i in 1:nrow(scenarios.Bin)){
+  scenarios <- subset(scenarios.Bin, scenario == i)
+  scenario	<- i
+  n <- scenarios$n                         #Number of clusters
+  l <- scenarios$l                         #Number of clinics
+  m <- scenarios$m                         #Number of observations within a clinic
+  t <- scenarios$t                         #Number of time-points
+  delta <- log(scenarios$exp.delta)
+  bs <-log(scenarios$bs/(1-scenarios$bs)) #scenarios$bs
+  beta <- cumsum(c(bs,-0.1,-0.1/2,-0.1/(2^2),-0.1/(2^3),-0.1/(2^4),-0.1/(2^5)))[1:t]
+  alpha<-c(scenarios$alpha0,scenarios$rho0,scenarios$rho1,scenarios$alpha1)
+  
+  it.k<-VARd_Power_uneqCP(n=n, t=t, l=l, m=m, CV.l=CV.l, CV.m=CV.m, family="binomial", alpha=alpha, delta=delta, phi=1, typeI.error=0.05, df=n-2, nsims=1000, seed=seed+i)
+  
+  Binomial.results[i,1] <- as.numeric(sqrt(it.k[1]))
+  Binomial.results[i,2] <- as.numeric(it.k[2])
+}
+Binomial.results
 
