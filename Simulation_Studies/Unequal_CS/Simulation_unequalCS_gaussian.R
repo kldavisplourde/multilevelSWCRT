@@ -188,7 +188,7 @@ if(delta==0) analysis<-"error"
 if(delta != 0) analysis<-"power"
 
 simData <- as.data.frame(simData)
-write.table(simData, file=paste("results/GaussResults_uneqCS",analysis,"_scenario",scenario,".txt",sep=""), sep="\t", row.names=F)
+write.table(simData, file=paste("results/GaussResults_uneqCS_",analysis,"_scenario",scenario,".txt",sep=""), sep="\t", row.names=F)
 
 
 
