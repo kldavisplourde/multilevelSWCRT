@@ -262,3 +262,59 @@ for(i in 1:nrow(scenarios.Bin)){
 }
 Binomial.results
 
+
+# Preliminary simulations
+scenarios.Gaus <- read.table("/Users/kdavis07/Dropbox/SW-CRT Methods Development/1_Multilevel_SS/RCode/Simulations/Gaussian/unequalCS/parameters_gaussian_power.txt", header=TRUE, sep="")
+Gaussian.results<- matrix(0,nrow(scenarios.Gaus),1)
+for(i in 1:nrow(scenarios.Gaus)){
+  scenarios <- subset(scenarios.Gaus, scenario == i)
+  scenario	<- i
+  n <- scenarios$n                         #Number of clusters
+  l <- scenarios$l                         #Number of clinics
+  m <- scenarios$m                         #Number of observations within a clinic
+  t <- scenarios$t                         #Number of time-points
+  delta <- scenarios$delta
+  bs <- scenarios$bs
+  beta <- cumsum(c(bs,0.1,0.1*0.5,0.1*(0.5^2),0.1*(0.5^3),0.1*(0.5^4),0.1*(0.5^5)))[1:t]
+  alpha<-c(scenarios$alpha0,scenarios$rho0,scenarios$rho1,scenarios$alpha1)
+  tot.var <- scenarios$tot.var
+  CV.l<-scenarios$CV.l
+  CV.m<-scenarios$CV.m
+  seed<-73946
+  
+  it.k<-VARd_Power_uneqCP(n=n, t=t, l=l, m=m, CV.l=CV.l, CV.m=CV.m, family="gaussian", alpha=alpha, delta=delta, tot.var=tot.var, typeI.error=0.05, df=n-2, nsims=100, seed=seed+i)
+  
+  Gaussian.results[i,1] <- as.numeric(it.k[2])
+}
+Gaussian.results
+
+
+scenarios.Bin <- read.table("/Users/kdavis07/Dropbox/SW-CRT Methods Development/1_Multilevel_SS/RCode/Simulations/Binomial/unequalCS/parameters_binomial_power.txt", header=TRUE, sep="")
+Binomial.results<- matrix(0,nrow(scenarios.Bin),1)
+for(i in 1:nrow(scenarios.Bin)){
+  scenarios <- subset(scenarios.Bin, scenario == i)
+  scenario	<- i
+  n <- scenarios$n                         #Number of clusters
+  l <- scenarios$l                         #Number of clinics
+  m <- scenarios$m                         #Number of observations within a clinic
+  t <- scenarios$t                         #Number of time-points
+  delta <- log(scenarios$exp.delta)
+  bs <-log(scenarios$bs/(1-scenarios$bs)) #scenarios$bs
+  beta <- cumsum(c(bs,-0.1,-0.1/2,-0.1/(2^2),-0.1/(2^3),-0.1/(2^4),-0.1/(2^5)))[1:t]
+  alpha<-c(scenarios$alpha0,scenarios$rho0,scenarios$rho1,scenarios$alpha1)
+  CV.l<-scenarios$CV.l
+  CV.m<-scenarios$CV.m
+  seed<-9751
+  
+  it.k<-VARd_Power_uneqCP(n=n, t=t, l=l, m=m, CV.l=CV.l, CV.m=CV.m, family="binomial", alpha=alpha, delta=delta, phi=1, typeI.error=0.05, df=n-2, nsims=100, seed=seed+i)
+  
+  Binomial.results[i,1] <- as.numeric(it.k[2])
+}
+Binomial.results
+
+# Compare the CV.l=CV.m=0 with our original code assuming equal CS 
+source("VARd.R") 
+vard<-VARd(n=n,l=l,m=m,t=t,subcluster="cohort",indiv="cross-sectional",family="binomial",alpha=alpha,delta=delta,beta=beta,phi=1)
+study_power(delta=delta,var.delta=vard,typeI.error=0.05,df=n-2)
+# Using MC we get a predicted power of 82.7% versus 80.7%
+
