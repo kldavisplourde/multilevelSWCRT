@@ -193,7 +193,7 @@ VARd_Power_uneqCP(n=n, t=t, l=l, m=m, CV.l=0.25, CV.m=0.25, family="binomial", a
 
 
 # SE and Power for simulation study
-scenarios.Gaus <- read.table("Simulation_Study/parameters_gaussian_power.txt", header=TRUE, sep="")
+scenarios.Gaus <- read.table("Simulation_Studies/parameters_gaussian_power.txt", header=TRUE, sep="")
 
 CV.l<-0;CV.m<-0;seed<-7735        # this should match our original predicted power
 CV.l<-0;CV.m<-0.25;seed<-8393 
@@ -230,7 +230,7 @@ Gaussian.results
 
 
 
-scenarios.Bin <- read.table("Simulation_Study/parameters_binomial_power.txt", header=TRUE, sep="")
+scenarios.Bin <- read.table("Simulation_Studies/parameters_binomial_power.txt", header=TRUE, sep="")
 
 CV.l<-0;CV.m<-0;seed<-7735        # this should match our original predicted power
 CV.l<-0;CV.m<-0.25;seed<-8393
