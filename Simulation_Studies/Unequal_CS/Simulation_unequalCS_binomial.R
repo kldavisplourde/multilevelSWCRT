@@ -1,4 +1,4 @@
-# Generating correlated binary outcomes under GLMM for multilevel stepped wedge trials
+# Generating correlated binary outcomes under GLMM for multilevel stepped wedge trials with unequal cluster-sizes
 # Kendra Davis-Plourde
 
 # INPUTS
@@ -15,6 +15,8 @@
 # exp.delta: Effect size (in odds ratio)
 # bs: baseline time effect
 # beta: Vector of period effects (in log odds ratio)
+# CV.l: coefficient of variation at the subcluster level
+# CV.m: coefficient of variation at the subject level
 
 #############################################################
 args<-commandArgs(trailingOnly = TRUE)
@@ -47,9 +49,12 @@ beta <- cumsum(c(bs,-0.1,-0.1/2,-0.1/(2^2),-0.1/(2^3),-0.1/(2^4),-0.1/(2^5)))[1:
 alpha<-c(scenarios$alpha0,scenarios$rho0,scenarios$rho1,scenarios$alpha1)
 niteration 	<-scenarios$niteration
 seed      <- scenarios$seed + k
+CV.l <- scenarios$CV.l
+CV.m <- scenarios$CV.m
 #############################
 paste("THIS IS THE LOG FOR SCENARIO",scenario)
-paste("n=",n,"l=",l,"m=",m,"t=",t,"delta=",delta,"bs=",bs,"niteration=",niteration,"seed=",seed)
+paste("n=",n,"l=",l,"m=",m,"t=",t,"delta=",delta,"bs=",bs,"niteration=",niteration,"seed=",seed,
+      "CV.l=",CV.l, "CV.m=",CV.m)
 paste("alpha="); paste(alpha)
 paste("beta="); paste(beta)
 #############################
@@ -57,6 +62,10 @@ paste("beta="); paste(beta)
 set.seed(seed)
 # First we will focus on closed cohort at clinic level and cross-sectional at individual level (no sig2_g)
 scheme<-rep(n/(t-1),t-1)
+trtSeq<-matrix(0,t-1,t)
+trtSeq[upper.tri(trtSeq)]<-1
+trtSeq<-trtSeq[rep(1:nrow(trtSeq), scheme),]
+
 ## 1. Generate variance components using given correlations
 sig2_e<-pi^2/3
 sig2_b<-sig2_e*alpha[3]/(1-alpha[1])                                  #within cluster
@@ -65,30 +74,56 @@ sig2_s<-sig2_e*(alpha[2]-alpha[3])/(1-alpha[1])                       #within cl
 sig2_p<-sig2_e*(alpha[1]-alpha[4]-alpha[2]+alpha[3])/(1-alpha[1])     #within clinic within period
 sig2<-c(sig2_b,sig2_c,sig2_s,sig2_p)
 
+# Functions for generating cluster-period sizes based on CV (we will assume cluster-period size does not change over time)
+l.variable <- function(n, t, CV.l, l) {
+  if (CV.l == 0) {
+    return(rep(l,n))
+  } else {
+    Nsubc.raw <- rgamma(n, 1/CV.l^2, rate = 1/(l * CV.l^2))
+    Nsubc <- as.integer(Nsubc.raw * (l/mean(Nsubc.raw)))
+    Nsubc[Nsubc < 2] = 2
+    return(Nsubc)
+  }
+}
+
+m.variable <- function(n, t, CV.m, m) {
+  if (CV.m == 0) {
+    return(rep(m,n))
+  } else {
+    N.raw <- rgamma(n, 1/CV.m^2, rate = 1/(m * CV.m^2))
+    N <- as.integer(N.raw * (m/mean(N.raw)))
+    N[N < 3] = 3
+    return(N)
+  }
+}
+
 simData <- foreach(i=1:niteration, .combine=rbind) %dopar% {
   ## 2. Generate simulated dataset
-  ### a. Generate id variables
-  dt <- data.frame(unique_id=(1:(n*t*l*m)))
-  dt$clust <- rep(1:n,each=t*l*m)
-  dt$period <- rep(1:t,each=l*m)
-  dt$clinic <- rep(1:l,each=m)
-  dt$id <- rep(rep(1:m,l*t),n) 
+  ### a. Generate cluster-period sizes
+  l_var <- l.variable(n, t, CV.l, l)
+  m_var <- m.variable(n, t, CV.m, m)
 
-  ### b. Treatment
-  trtSeq<-matrix(0,t-1,t)
-  trtSeq[upper.tri(trtSeq)]<-1
-  trtSeq<-trtSeq[rep(1:nrow(trtSeq), scheme),]
-
-  ### c. Generate eta, probability, y, and subject-specific treatment
+  ### b. Generate eta, probability, y, and subject-specific treatment
   for(i in 1:n){
+    ### Generate id variables
+    dt.i <- data.frame(id=(1:(t*l_var[i]*m_var[i])))
+    dt.i$clust <- i
+    dt.i$period <- rep(1:t,each=l_var[i]*m_var[i])
+    dt.i$clinic <- rep(1:l_var[i],each=m_var[i])
+    dt.i$id <- rep(1:m_var[i],l_var[i]*t) 
+    
+    if(i==1){dt<-dt.i} 
+    else{dt<-rbind(dt,dt.i)}
+    
     trt <- trtSeq[i,]
     b_i <- rnorm(1,mean=0,sd=sqrt(sig2_b))
-    c_il <- rnorm(l,mean=0,sd=sqrt(sig2_c))
+    c_il <- rnorm(l_var[i],mean=0,sd=sqrt(sig2_c))
     s_ij <- rnorm(t,mean=0,sd=sqrt(sig2_s))
-    p_ijl <- matrix(rnorm(t*l,mean=0,sd=sqrt(sig2_p)),nrow=l,ncol=t)
+    p_ijl <- matrix(rnorm(t*l_var[i],mean=0,sd=sqrt(sig2_p)),nrow=l_var[i],ncol=t)
+    
     for(j in 1:t){
-      for(h in 1:l){
-        for(k in 1:m){
+      for(h in 1:l_var[i]){
+        for(k in 1:m_var[i]){
         
           treatment.ijlk<-trt[j]
         
@@ -152,7 +187,7 @@ if(delta==0) analysis<-"error"
 if(delta != 0) analysis<-"power"
 
 simData <- as.data.frame(simData)
-write.table(simData, file=paste("results/BinResults_",analysis,"_scenario",scenario,".txt",sep=""), sep="\t", row.names=F)
+write.table(simData, file=paste("results/BinResults_uneqCS_",analysis,"_scenario",scenario,".txt",sep=""), sep="\t", row.names=F)
 
 
 
