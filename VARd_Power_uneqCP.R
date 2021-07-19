@@ -17,7 +17,7 @@
 #         rho_1=between subcluster between period
 #         alpha_1=within subcluster between period
 # delta: Effect size on the link function scale
-# beta: Vector of period effect on the link function scale 
+# beta: Vector of period effects on the link function scale 
 # phi: Common dispersion (only needed when outcome is binary)
 # tot.var: total variance of the outcome (only needed when outcome is continuous)
 # typeI.error: Type I error rate for t-test (default is 0.05)
@@ -105,7 +105,6 @@ VARd_Power_uneqCP <- function(n, t, l, m, CV.l=0, CV.m=0, family="gaussian", alp
       
       # design matrix
       # put trt indicator at the first column for convenience
-      period <- rep(1:t)
       X <- trtSeq[i,]
       Z <- cbind(X,diag(t))
       
@@ -306,7 +305,7 @@ for(i in 1:nrow(scenarios.Bin)){
   CV.m<-scenarios$CV.m
   seed<-9751
   
-  it.k<-VARd_Power_uneqCP(n=n, t=t, l=l, m=m, CV.l=CV.l, CV.m=CV.m, family="binomial", alpha=alpha, delta=delta, phi=1, typeI.error=0.05, df=n-2, nsims=100, seed=seed+i)
+  it.k<-VARd_Power_uneqCP(n=n, t=t, l=l, m=m, CV.l=CV.l, CV.m=CV.m, family="binomial", alpha=alpha, delta=delta, beta=beta, phi=1, typeI.error=0.05, df=n-2, nsims=100, seed=seed+i)
   
   Binomial.results[i,1] <- as.numeric(it.k[2])
 }
