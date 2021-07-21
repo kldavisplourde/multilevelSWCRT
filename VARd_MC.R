@@ -6,9 +6,9 @@
 
 # INPUT
 # n: Number of clusters (I)
+# t: Number of periods (T)
 # l: Average number of subclusters per cluster (K)
 # m: Average number of participants per subcluster (N)
-# t: Number of periods (T)
 # CV.l: Degree of between-cluster imbalance with respect to the number of subclusters measured by coefficient of variation
 # CV.m: Degree of between-subcluster imbalance measured by coefficient of variation
 # family: "gaussian" or "binomial" (gaussian with identity link or binomial with logit link)
@@ -25,7 +25,7 @@
 # seed: a seed to control reproducible output
 ########################################################################################################################
 
-VARd_MC <- function(n, l, m, t, CV.l=0, CV.m=0, family=c("gaussian","binomial"), alpha, delta, beta=rep(0, t), phi=1, tot.var=1, nsims=1000, seed=2021){
+VARd_MC <- function(n, t, l, m, CV.l=0, CV.m=0, family=c("gaussian","binomial"), alpha, delta, beta=rep(0, t), phi=1, tot.var=1, nsims=1000, seed=2021){
   
   # elements of efficiency calculation
   scheme<-rep(n/(t-1),t-1)
