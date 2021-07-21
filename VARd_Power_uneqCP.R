@@ -138,7 +138,7 @@ VARd_Power_uneqCP <- function(n, t, l, m, CV.l=0, CV.m=0, family="gaussian", alp
     #print(vardelta)
     
     # t-test
-      t1_power <- study_power(delta=delta, var.delta=mean(vardelta), typeI.error=typeI.error, df=df)
+      t1_power <- study_power(delta=delta, var.delta=mean(vardelta), alpha=typeI.error, df=df)
   }
   
   return(data.frame(var.delta=mean(vardelta), power=t1_power, CP.size=meanCP.size, total.size=totalSample))
@@ -314,6 +314,6 @@ Binomial.results
 # Compare the CV.l=CV.m=0 with our original code assuming equal CS 
 source("VARd.R") 
 vard<-VARd(n=n,l=l,m=m,t=t,subcluster="cohort",indiv="cross-sectional",family="binomial",alpha=alpha,delta=delta,beta=beta,phi=1)
-study_power(delta=delta,var.delta=vard,typeI.error=0.05,df=n-2)
+study_power(delta=delta,var.delta=vard,alpha=0.05,df=n-2)
 # Using MC we get a predicted power of 82.7% versus 80.7%
 
