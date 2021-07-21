@@ -25,7 +25,7 @@
 # seed: a seed to control reproducible output
 ########################################################################################################################
 
-VARd_uneqCS <- function(n, l, m, t, CV.l=0, CV.m=0, family=c("gaussian","binomial"), alpha, delta, beta=rep(0, t), phi=1, tot.var=1, nsims=1000, seed=2021){
+VARd_MC <- function(n, l, m, t, CV.l=0, CV.m=0, family=c("gaussian","binomial"), alpha, delta, beta=rep(0, t), phi=1, tot.var=1, nsims=1000, seed=2021){
   
   # elements of efficiency calculation
   scheme<-rep(n/(t-1),t-1)
