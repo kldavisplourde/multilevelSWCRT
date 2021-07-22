@@ -9,17 +9,17 @@
 # t: Number of periods (T)
 # subcluster: cohort or cross-sectional
 # indiv: cohort or cross-sectional
-# family: gaussian (continuous outcome) or binomial (binary outcome with canonical logit link)
+# family: gaussian or binomial (with canonical logit link)
 # alpha: Vector of ICCs in the following order:
 #         alpha_0=within subcluster within period
 #         rho_0=between subcluster within period
 #         rho_1=between subcluster between period
 #         alpha_1=within subcluster between period
 #         alpha_2=within-individual correlation
-# delta: Effect of intervention in log odds ratio (only needed when outcome is binary)
-# beta: Vector of period effects (only needed when outcome is binary)
-# phi: common dispersion (only needed when outcome is binary)
-# tot.var: total variance of the outcome (only needed when outcome is continuous)
+# delta: Effect of intervention in log odds ratio (only needed when outcome is binomial)
+# beta: Vector of period effects (only needed when outcome is binomial)
+# phi: common dispersion (only needed when outcome is binomial)
+# tot.var: total variance of the outcome (only needed when outcome is Gaussian)
 
 VARd<-function(n,l,m,t,subcluster=c("cohort","cross-sectional"),indiv=c("cohort","cross-sectional"),family=c("gaussian","binomial"),
                  alpha,delta=NA,beta=NA,phi=1,tot.var=1){

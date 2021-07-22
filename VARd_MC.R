@@ -17,7 +17,7 @@
 #         rho_0=between subcluster within period
 #         rho_1=between subcluster between period
 #         alpha_1=within subcluster between period
-# delta: Effect size on the link function scale
+# delta: Effect size on the link function scale (non-Gaussian outcomes only)
 # beta: Vector of period effects on the link function scale 
 # phi: Common dispersion (only needed when outcome is binomial)
 # tot.var: total variance of the outcome (only needed when outcome is gaussian)
@@ -25,7 +25,7 @@
 # seed: a seed to control reproducible output
 ########################################################################################################################
 
-VARd_MC <- function(n, t, l, m, CV.l=0, CV.m=0, family=c("gaussian","binomial"), alpha, delta, beta=rep(0, t), phi=1, tot.var=1, nsims=1000, seed=2021){
+VARd_MC <- function(n, t, l, m, CV.l=0, CV.m=0, family=c("gaussian","binomial"), alpha, delta=NA, beta=rep(0, t), phi=1, tot.var=1, nsims=1000, seed=2021){
   
   # elements of efficiency calculation
   scheme<-rep(n/(t-1),t-1)
