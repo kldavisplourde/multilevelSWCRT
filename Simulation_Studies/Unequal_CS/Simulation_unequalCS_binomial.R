@@ -48,7 +48,7 @@ bs <-log(scenarios$bs/(1-scenarios$bs)) #scenarios$bs
 beta <- cumsum(c(bs,-0.1,-0.1/2,-0.1/(2^2),-0.1/(2^3),-0.1/(2^4),-0.1/(2^5)))[1:t]
 alpha<-c(scenarios$alpha0,scenarios$rho0,scenarios$rho1,scenarios$alpha1)
 niteration 	<-scenarios$niteration
-seed      <- scenarios$seed + k
+seed      <- scenarios$seed
 CV.l <- scenarios$CV.l
 CV.m <- scenarios$CV.m
 #############################

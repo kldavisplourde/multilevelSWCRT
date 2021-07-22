@@ -49,7 +49,7 @@ bs <- scenarios$bs
 beta <- cumsum(c(bs,0.1,0.1*0.5,0.1*(0.5^2),0.1*(0.5^3),0.1*(0.5^4),0.1*(0.5^5)))[1:t]
 alpha<-c(scenarios$alpha0,scenarios$rho0,scenarios$rho1,scenarios$alpha1)
 niteration 	<-scenarios$niteration
-seed      <- scenarios$seed + k
+seed      <- scenarios$seed
 tot.var <- scenarios$tot.var
 CV.l <- scenarios$CV.l
 CV.m <- scenarios$CV.m
