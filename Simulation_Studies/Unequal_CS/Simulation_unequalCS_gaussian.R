@@ -35,7 +35,7 @@ if (is.na(ncores)) ncores<-1
 registerDoMC(cores=ncores)
 
 # define scenarios
-scenarios <- read.table("parameters_gaussian_power.txt", header=TRUE, sep="")
+scenarios <- read.table("parameters_gaussian_uneqCS_power.txt", header=TRUE, sep="")
 scenarios <- subset(scenarios, scenario == k)
 
 ######   SCENARIO X   ######
