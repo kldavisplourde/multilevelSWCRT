@@ -34,6 +34,7 @@ for(k in 1:30){
   t <- scenario$t                         #Number of time-points
   delta <- scenario$delta
   alpha<-c(scenario$alpha0,scenario$rho0,scenario$rho1,scenario$alpha1)
+  #alpha<-c(scenario$alpha0,scenario$rho0,scenario$rho0,scenario$alpha0) # ignoring between-period ICCs (CAC=1)
   tot.var <- scenario$tot.var
   
   vard<-VARd(n=n,l=l,m=m,t=t,subcluster="cohort",indiv="cross-sectional",family="gaussian",alpha=alpha,tot.var=tot.var)
@@ -58,6 +59,7 @@ for(k in 1:30){
   bs <-log(scenario$bs/(1-scenario$bs)) #scenarios$bs
   beta <- cumsum(c(bs,-0.1,-0.1/2,-0.1/(2^2),-0.1/(2^3),-0.1/(2^4),-0.1/(2^5)))[1:t]
   alpha<-c(scenario$alpha0,scenario$rho0,scenario$rho1,scenario$alpha1)
+  #alpha<-c(scenario$alpha0,scenario$rho0,scenario$rho0,scenario$alpha0) # ignoring between-period ICCs (CAC=1)
   
   vard<-VARd(n=n,l=l,m=m,t=t,subcluster="cohort",indiv="cross-sectional",family="binomial",alpha=alpha,delta=delta,beta=beta,phi=1)
   power0<-study_power(delta=delta,var.delta=vard,typeI.error=0.05,df=n-2)
