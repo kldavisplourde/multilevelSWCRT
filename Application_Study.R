@@ -47,8 +47,8 @@ for(i in 1:length(m0)){
   }
 }
 plot(m0,power)
-power[21] #87.4%
-m0[21] #N = 70 participants per subcluster in order to achieve 87.4% power
+power[28] #87.5%
+m0[28] #N = 77 participants per subcluster in order to achieve 87.5% power
 
 
 # Assuming closed-cohort on all levels.
@@ -65,12 +65,12 @@ for(i in 1:length(m0)){
   }
 }
 plot(m0,power)
-power[29] #87.6%
-m0[29] #N = 78 participants per subcluster in order to achieve 87.6% power
+power[23] #87.5%
+m0[23] #N = 72 participants per subcluster in order to achieve 87.5% power
 
 
 # Assuming cross-sectional on all levels.
-m0<-seq(50,100,by=1)                #Varying number of participants within a subcluster (N) 
+m0<-seq(50,120,by=1)                #Varying number of participants within a subcluster (N) 
 for(i in 1:length(m0)){
   m<-m0[i]
   vard<-VARd(n=n,l=l,m=m,t=t,subcluster="cross-sectional",indiv="cross-sectional",family="gaussian",alpha=alpha,tot.var=tot.var)
@@ -83,8 +83,8 @@ for(i in 1:length(m0)){
   }
 }
 plot(m0,power)
-power[51] #87.5%
-m0[51] #N = 100 participants per subcluster in order to achieve 87.5% power
+power[50] #87.5%
+m0[50] #N = 99 participants per subcluster in order to achieve 87.5% power
 
 ####################################################################################################################################
 
@@ -110,22 +110,22 @@ for(i in 1:length(x0)){
   }
 }
 plot(x0,power)
-power[88] #87.5%
-x0[88] #x = 9870 total number of participants under individual randomization to achieve 87.5% power
+power[87] #87.5%
+x0[87] #x = 9860 total number of participants under individual randomization to achieve 87.5% power
 
 ### Next we need to generate the design effect
 #### INPUTS ####
-x<-9870                                     #Total number of participants under individual randomization
+x<-9860                                     #Total number of participants under individual randomization
 alpha<-c(0.046,0.04,0.02,0.023,0.1)         #ICCs (same as above)
 t<-6                                        #Number of periods (T)
 S<-t-1                                      #Number of steps
 c<-1                                        #Number of measures taken at each step
 b<-1                                        #Number of measures taken at baseline
 l<-17                                       #Number of subclusters per cluster (K)
-m<-78                                       #Number of participants per subcluster (N)
+m<-77                                       #Number of participants per subcluster (N)
 ####
 
-design.effect<-designEffect_SWCRT(l=l,m=m,t=t,S=S,c=c,b=b,subcluster="cohort",indiv="cross-sectional",alpha=alpha) #Approximately 13.4
+design.effect<-designEffect_SWCRT(l=l,m=m,t=t,S=S,c=c,b=b,subcluster="cohort",indiv="cross-sectional",alpha=alpha) #Approximately 12.1
 x*design.effect/(l*m) #100 clusters are needed to attain 87.5% power
 
 ####################################################################################################################################
@@ -138,7 +138,7 @@ x*design.effect/(l*m) #100 clusters are needed to attain 87.5% power
 ## A. Outcome is binary and we will use the canonical logit link
 ### INPUTS ###
 delta<-log(0.7)                       #Intervention effect of interest on logit link scale
-alpha<-c(0.008,0.007,0.0035,0.004,0.1) #ICCs in the following order:
+alpha<-c(0.008,0.007,0.0035,0.004,0.2) #ICCs in the following order:
 #                                       alpha_0=within subcluster within period
 #                                       rho_0=between subcluster within period
 #                                       rho_1=between subcluster between period         
@@ -186,8 +186,8 @@ for(i in 1:length(m0)){
   }
 }
 plot(m0,power)
-power[51] #89.4% power
-m0[51]    #N = 51 participants per subcluster in order to achieve 89.4% power
+power[66] #89.5% power
+m0[66]    #N = 66 participants per subcluster in order to achieve 89.5% power
 
 
 # Assuming cross-sectional on all levels.
@@ -232,7 +232,7 @@ power[139] #89.5% power
 m0[139]    #N = 139 participants per subcluster in order to achieve 89.5% power
 
 # Assuming closed-cohort on all levels.
-m0<-seq(1,200,by=1)                   #Varying number of participants within a subcluster (N)
+m0<-seq(1,300,by=1)                   #Varying number of participants within a subcluster (N)
 for(i in 1:length(m0)){
   m<-m0[i]
   vard<-VARd(n=n,l=l,m=m,t=t,subcluster="cohort",indiv="cohort",family="binomial",alpha=alpha,delta=delta,beta=beta,phi=phi)
@@ -245,8 +245,8 @@ for(i in 1:length(m0)){
   }
 }
 plot(m0,power)
-power[169] #89.5% power
-m0[169]    #N = 169 participants per subcluster in order to achieve 89.5% power
+power[218] #89.5% power
+m0[218]    #N = 218 participants per subcluster in order to achieve 89.5% power
 
 # Assuming cross-sectional on all levels.
 m0<-seq(1,200,by=1)                   #Varying number of participants within a subcluster (N)
@@ -302,8 +302,8 @@ for(i in 1:length(m0)){
   }
 }
 plot(m0,power)
-power[46] #89.7% power
-m0[46]    #N = 46 participants per subcluster in order to achieve 89.7% power
+power[59] #89.6% power
+m0[59]    #N = 59 participants per subcluster in order to achieve 89.6% power
 
 # Assuming cross-sectional on all levels.
 m0<-seq(1,200,by=1)                   #Varying number of participants within a subcluster (N)
@@ -319,8 +319,8 @@ for(i in 1:length(m0)){
   }
 }
 plot(m0,power)
-power[37] #89.2% power
-m0[37]    #N = 37 participants per subcluster in order to achieve 89.2% power
+power[37] #89.3% power
+m0[37]    #N = 37 participants per subcluster in order to achieve 89.3% power
 
 ####################################################################################################################################
 ####################################################################################################################################
