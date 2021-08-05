@@ -9,6 +9,7 @@ setwd("/Users/kdavis07/Documents/GitHub/multilevel_crt_samplesize")
 source("VARd.R")                 #Importing function for generating the variance of the intervention effect 
 source("study_power.R")          #Importing function for generating power
 source("designEffect_SWCRT.R")   #Importing function for generating design effect under stepped wedge design (continuous outcome only)
+source("VARd_MC.R")              #Importing function for generating the variance of the intervention effect under unequal cluster sizes
 ####################################################################################################################################
 ####################################################################################################################################
 
@@ -321,6 +322,66 @@ for(i in 1:length(m0)){
 plot(m0,power)
 power[37] #89.3% power
 m0[37]    #N = 37 participants per subcluster in order to achieve 89.3% power
+
+####################################################################################################################################
+
+# Unequal cluster sizes
+### INPUTS ###
+delta<-log(0.7)                       #Intervention effect of interest on logit link scale
+alpha<-c(0.008,0.007,0.0035,0.004,0.2) #ICCs in the following order:
+#                                       alpha_0=within subcluster within period
+#                                       rho_0=between subcluster within period
+#                                       rho_1=between subcluster between period         
+#                                       alpha_1=within subcluster between period
+#                                       alpha_2=within-individual correlation
+#n<-                                  #Number of clusters (I)
+l<-4                                  #Average number of subclusters per cluster (K-bar)
+CV.l<-0.69                            #Coefficient of variation in terms of subclusters per cluster
+m<-79                                 #Average number of participants per subcluster (N-bar)
+CV.m<-0.79                            #Coefficient of variation in terms of subjects per subcluster
+t<-5                                  #Number of periods (T)
+bs<-log(0.05/(1-0.05))                #Period 1 effect as a function of the prevalence. Here the prevalence is 0.05.
+beta<-cumsum(c(bs,-0.1,-0.1/2,-0.1/(2^2),-0.1/(2^3)))[1:t] #Period effects. Here we assume a slightly decreasing effect.
+phi<-1                                #Scale parameter
+ER1<-0.05                             #Type I error rate for t-test
+###
+
+n0<-seq(12,32,by=4)                   #Varying number of participants within a subcluster (N)
+for(i in 1:length(n0)){
+  n<-n0[i]
+  df<-n-2                               #Degrees of freedom for t-test
+  vard<-VARd_MC(n=n, t=t, l=l, m=m, CV.l=CV.l, CV.m=CV.m, family="binomial", alpha=alpha, delta=delta, beta=beta, phi=phi, nsims=1000, seed=8259)
+  power0<-study_power(delta=delta,var.delta=vard,typeI.error=ER1,df=df)
+  
+  if(i==1) {
+    power<-power0
+  } else {
+    power<-c(power,power0)
+  }
+}
+plot(n0,power)
+power[3] #88.5% power
+n0[3]    #I = 20 clusters in order to achieve 88.5% power
+
+
+# CV Sensitivity
+CV.l0<-c(0.5,0.6,0.7,0.8,0.9) 
+CV.m0<-c(0.6,0.7,0.8,0.9,1) 
+n<-20
+df<-n-2
+power<-NA
+for(i in 1:length(CV.l0)){
+  CV.l<-CV.l0[i] 
+  for(j in 1:length(CV.m0)){
+    CV.m<-CV.m0[j] 
+    vard<-VARd_MC(n=n, t=t, l=l, m=m, CV.l=CV.l, CV.m=CV.m, family="binomial", alpha=alpha, delta=delta, beta=beta, phi=phi, nsims=1000, seed=8259)
+    power0<-study_power(delta=delta,var.delta=vard,typeI.error=ER1,df=df)
+    power<-c(power,power0)
+  }
+}
+power[-1]
+
+
 
 ####################################################################################################################################
 ####################################################################################################################################
