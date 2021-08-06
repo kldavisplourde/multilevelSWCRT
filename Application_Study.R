@@ -130,6 +130,61 @@ design.effect<-designEffect_SWCRT(l=l,m=m,t=t,S=S,c=c,b=b,subcluster="cohort",in
 x*design.effect/(l*m) #100 clusters are needed to attain 87.5% power
 
 ####################################################################################################################################
+
+# Unequal cluster sizes
+### INPUTS ###
+delta<- -0.1                     #Intervention effect of interest
+alpha<-c(0.046,0.04,0.02,0.023,0.1) #ICCs in the following order:
+#                                             alpha_0=within subcluster within period
+#                                             rho_0=between subcluster within period
+#                                             rho_1=between subcluster between period         
+#                                             alpha_1=within subcluster between period
+#                                             alpha_2=within-individual correlation
+#n<-                              #Number of clusters (I)
+l<-18                             #Number of subclusters per cluster (K)
+CV.l<-1                           #Coefficient of variation in terms of subclusters per cluster
+m<-126                            #Number of participants per subcluster (N)
+CV.m<-1.1                         #Coefficient of variation in terms of subjects per cluster
+t<-6                              #Number of periods (T)
+tot.var<-2.5                      #Total variance under continuous outcome
+ER1<-0.05                         #Type I error rate for t-test
+###
+
+n0<-seq(90,115,by=5)              #Varying number of clusters (I)
+for(i in 1:length(n0)){
+  n<-n0[i]
+  df<-n-2                         #Degrees of freedom for t-test
+  vard<-VARd_MC(n=n, t=t, l=l, m=m, CV.l=CV.l, CV.m=CV.m, family="gaussian", alpha=alpha, delta=delta, tot.var=tot.var, nsims=1000, seed=3528)
+  power0<-study_power(delta=delta,var.delta=vard,typeI.error=ER1,df=df)
+  
+  if(i==1) {
+    power<-power0
+  } else {
+    power<-c(power,power0)
+  }
+}
+plot(n0,power)
+power[5] #87.0% power
+n0[5]    #I = 110 clusters in order to achieve 87.0% power
+
+# CV Sensitivity
+CV.l0<-c(0.8,0.9,1,1.1,1.2) 
+CV.m0<-c(0.9,1,1.1,1.2,1.3) 
+n<-110
+df<-n-2
+power<-NA
+for(i in 1:length(CV.l0)){
+  CV.l<-CV.l0[i] 
+  for(j in 1:length(CV.m0)){
+    CV.m<-CV.m0[j] 
+    vard<-VARd_MC(n=n, t=t, l=l, m=m, CV.l=CV.l, CV.m=CV.m, family="gaussian", alpha=alpha, delta=delta, tot.var=tot.var, nsims=1000, seed=3528)
+    power0<-study_power(delta=delta,var.delta=vard,typeI.error=ER1,df=df)
+    power<-c(power,power0)
+  }
+}
+power[-1]
+
+####################################################################################################################################
 ####################################################################################################################################
 
 
@@ -346,10 +401,10 @@ phi<-1                                #Scale parameter
 ER1<-0.05                             #Type I error rate for t-test
 ###
 
-n0<-seq(12,32,by=4)                   #Varying number of participants within a subcluster (N)
+n0<-seq(12,32,by=4)                   #Varying number of clusters (I)
 for(i in 1:length(n0)){
   n<-n0[i]
-  df<-n-2                               #Degrees of freedom for t-test
+  df<-n-2                             #Degrees of freedom for t-test
   vard<-VARd_MC(n=n, t=t, l=l, m=m, CV.l=CV.l, CV.m=CV.m, family="binomial", alpha=alpha, delta=delta, beta=beta, phi=phi, nsims=1000, seed=8259)
   power0<-study_power(delta=delta,var.delta=vard,typeI.error=ER1,df=df)
   
@@ -362,7 +417,6 @@ for(i in 1:length(n0)){
 plot(n0,power)
 power[3] #88.5% power
 n0[3]    #I = 20 clusters in order to achieve 88.5% power
-
 
 # CV Sensitivity
 CV.l0<-c(0.5,0.6,0.7,0.8,0.9) 
@@ -380,8 +434,6 @@ for(i in 1:length(CV.l0)){
   }
 }
 power[-1]
-
-
 
 ####################################################################################################################################
 ####################################################################################################################################
