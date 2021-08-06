@@ -28,7 +28,7 @@ source("study_power.R")
 # define scenarios
 scenarios <- read.table("Simulation_Studies/Unequal_CS/parameters_gaussian_uneqCS_power.txt", header=TRUE, sep="")
 
-for(k in 1:48){
+for(k in 1:80){
   scenario	<- subset(scenarios, scenario == k)
   n <- scenario$n                         #Number of clusters
   l <- scenario$l                         #Number of clinics
@@ -53,7 +53,7 @@ write.table(power, file="/Users/kdavis07/Dropbox/SW-CRT Methods Development/1_Mu
 # define scenarios
 scenarios <- read.table("Simulation_Studies/Unequal_CS/parameters_binomial_uneqCS_power.txt", header=TRUE, sep="")
 
-for(k in 1:48){
+for(k in 1:80){
   scenario	<- subset(scenarios, scenario == k)
   n <- scenario$n                         #Number of clusters
   l <- scenario$l                         #Number of clinics
@@ -73,8 +73,3 @@ for(k in 1:48){
   if(k==1){power<-power0} else{power<-c(power,power0)}
 }
 write.table(power, file="/Users/kdavis07/Dropbox/SW-CRT Methods Development/1_Multilevel_SS/RCode/Simulations/PredictedPower_uneqCS_Binomial.txt", sep="\t", row.names=F)
-
-
-
-
-
