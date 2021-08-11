@@ -56,9 +56,9 @@ VARd<-function(n,l,m,t,subcluster=c("cohort","cross-sectional"),indiv=c("cohort"
     
     if (subcluster=="cross-sectional" & indiv=="cross-sectional") {
       sig2_b<-sig2_e*alpha[3]/(1-alpha[1])                                  #within cluster
-      sig2_c<-sig2_e*(alpha[1]-alpha[2])/(1-alpha[1])                       #within subcluster
+      sig2_c<-0                                                             #within subcluster
       sig2_s<-sig2_e*(alpha[2]-alpha[3])/(1-alpha[1])                       #within cluster within period
-      sig2_p<-0                                                             #within subcluster within period
+      sig2_p<-sig2_e*(alpha[1]-alpha[2])/(1-alpha[1])                       #within subcluster within period
       sig2_g<-0                                                             #within person
     }
     
