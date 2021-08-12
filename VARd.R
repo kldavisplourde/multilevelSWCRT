@@ -7,8 +7,8 @@
 # l: Number of subclusters per cluster (K)
 # m: Number of participants per subcluster (N)
 # t: Number of periods (T)
-# subcluster: cohort or cross-sectional
-# indiv: cohort or cross-sectional
+# subcluster: cohort or cross-sectional on subcluster level
+# indiv: cohort or cross-sectional on subject level
 # family: gaussian or binomial (with canonical logit link)
 # alpha: Vector of ICCs in the following order:
 #         alpha_0=within subcluster within period
