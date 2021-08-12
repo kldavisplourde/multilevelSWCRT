@@ -1,8 +1,7 @@
 ########################################################################################################################
-# Monte Carlo approximation of the variance of the intervention effect for multilevel stepped wedge cluster randomized trials
-# with closed-cohort at subcluster level and cross-sectional at subject level design (design variant B) 
-# and equal or unequal cluster-sizes (between-cluster imbalance only). 
-# Code based on SWD_GEEPower_cp_variable_v2.R by Zibo Tian, modified by Kendra Davis-Plourde.
+# Variance of the intervention effect for stepped wedge cluster randomized trials with subclusters
+# and equal or unequal cluster-sizes (between-cluster size imbalance only). 
+# Code based on SWD_GEEPower_cp_variable_v2.R by Zibo Tian and Fan Li, modified by Kendra Davis-Plourde.
 
 # INPUT
 # n: Number of clusters (I)
@@ -11,6 +10,8 @@
 # m: Average number of participants per subcluster (N)
 # CV.l: Degree of between-cluster imbalance with respect to the number of subclusters measured by coefficient of variation
 # CV.m: Degree of between-subcluster imbalance measured by coefficient of variation
+# subcluster: cohort or cross-sectional on subcluster level
+# indiv: cohort or cross-sectional on subject level
 # family: "gaussian" or "binomial" (gaussian with identity link or binomial with logit link)
 # alpha: Vector of ICCs in the following order:
 #         alpha_0=within subcluster within period
@@ -25,7 +26,7 @@
 # seed: a seed to control reproducible output
 ########################################################################################################################
 
-VARd_MC <- function(n, t, l, m, CV.l=0, CV.m=0, family=c("gaussian","binomial"), alpha, delta=NA, beta=rep(0, t), phi=1, tot.var=1, nsims=1000, seed=2021){
+VARd_MC <- function(n, t, l, m, CV.l=0, CV.m=0, subcluster=c("cohort","cross-sectional"),indiv=c("cohort","cross-sectional"), family=c("gaussian","binomial"), alpha, delta=NA, beta=rep(0, t), phi=1, tot.var=1, nsims=1000, seed=2021){
   
   # elements of efficiency calculation
   scheme<-rep(n/(t-1),t-1)
@@ -61,8 +62,20 @@ VARd_MC <- function(n, t, l, m, CV.l=0, CV.m=0, family=c("gaussian","binomial"),
   
   # Generate correlation matrix (for Gaussian)
   R <- function(ki, mi) {
-    B <- (1 + (mi-1)*alpha[1] + mi*(ki-1)*alpha[2])/(ki*mi)
-    C <- (alpha[4] + (mi-1)*alpha[4] + mi*(ki-1)*alpha[3])/(ki*mi)
+    if (subcluster=="cohort" & indiv=="cohort"){
+      B <- (1 + (mi-1)*alpha[1] + mi*(ki-1)*alpha[2])/(ki*mi)
+      C <- (alpha[5] + (mi-1)*alpha[4] + mi*(ki-1)*alpha[3])/(ki*mi)
+    }
+    
+    if (subcluster=="cohort" & indiv=="cross-sectional"){
+      B <- (1 + (mi-1)*alpha[1] + mi*(ki-1)*alpha[2])/(ki*mi)
+      C <- (mi*alpha[4] + mi*(ki-1)*alpha[3])/(ki*mi)
+    }
+    
+    if (subcluster=="cross-sectional" & indiv=="cross-sectional") {
+      B <- (1 + (mi-1)*alpha[1] + mi*(ki-1)*alpha[2])/(ki*mi)
+      C <- (mi*ki*alpha[3])/(ki*mi)
+    }
     
     R <- kronecker(diag(t), B-C) + kronecker(matrix(1,nrow=t,ncol=t),C)
       
@@ -71,11 +84,29 @@ VARd_MC <- function(n, t, l, m, CV.l=0, CV.m=0, family=c("gaussian","binomial"),
   
   # Generate variance components using given correlations (for binomial)
   sig2_e<-pi^2/3                                                        #variance of standard logistic distribution
-  sig2_b<-sig2_e*alpha[3]/(1-alpha[1])                                  #within cluster
-  sig2_c<-sig2_e*(alpha[4]-alpha[3])/(1-alpha[1])                       #within subcluster
-  sig2_s<-sig2_e*(alpha[2]-alpha[3])/(1-alpha[1])                       #within cluster within period
-  sig2_p<-sig2_e*(alpha[1]-alpha[4]-alpha[2]+alpha[3])/(1-alpha[1])     #within subcluster within period
-  sig2_g<-0                                                             #within person
+  if (subcluster=="cohort" & indiv=="cohort"){
+    sig2_b<-sig2_e*alpha[3]/(1-alpha[1]-alpha[5]+alpha[4])                                #within cluster
+    sig2_c<-sig2_e*(alpha[4]-alpha[3])/(1-alpha[1]-alpha[5]+alpha[4])                     #within subcluster
+    sig2_s<-sig2_e*(alpha[2]-alpha[3])/(1-alpha[1]-alpha[5]+alpha[4])                     #within cluster within period
+    sig2_p<-sig2_e*(alpha[1]-alpha[4]-alpha[2]+alpha[3])/(1-alpha[1]-alpha[5]+alpha[4])   #within subcluster within period
+    sig2_g<-sig2_e*(alpha[5]-alpha[4])/(1-alpha[1]-alpha[5]+alpha[4])                     #within person
+  }
+  
+  if (subcluster=="cohort" & indiv=="cross-sectional"){
+    sig2_b<-sig2_e*alpha[3]/(1-alpha[1])                                  #within cluster
+    sig2_c<-sig2_e*(alpha[4]-alpha[3])/(1-alpha[1])                       #within subcluster
+    sig2_s<-sig2_e*(alpha[2]-alpha[3])/(1-alpha[1])                       #within cluster within period
+    sig2_p<-sig2_e*(alpha[1]-alpha[4]-alpha[2]+alpha[3])/(1-alpha[1])     #within subcluster within period
+    sig2_g<-0                                                             #within person
+  }
+  
+  if (subcluster=="cross-sectional" & indiv=="cross-sectional") {
+    sig2_b<-sig2_e*alpha[3]/(1-alpha[1])                                  #within cluster
+    sig2_c<-0                                                             #within subcluster
+    sig2_s<-sig2_e*(alpha[2]-alpha[3])/(1-alpha[1])                       #within cluster within period
+    sig2_p<-sig2_e*(alpha[1]-alpha[2])/(1-alpha[1])                       #within subcluster within period
+    sig2_g<-0                                                             #within person
+  }
   
   
   # calculate variance
