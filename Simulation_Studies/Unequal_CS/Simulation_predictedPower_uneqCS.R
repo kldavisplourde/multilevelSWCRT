@@ -18,6 +18,8 @@
 # tot.var: total variance
 # CV.l: coefficient of variation at the subcluster level
 # CV.m: coefficient of variation at the subject level
+# subcluster: cohort or cross-sectional on subcluster level
+# indiv: cohort or cross-sectional on subject level
 
 #############################################################
 setwd("/Users/kdavis07/Documents/GitHub/multilevel_crt_samplesize/")
@@ -40,7 +42,7 @@ for(k in 1:80){
   CV.l <- scenario$CV.l
   CV.m <- scenario$CV.m
   
-  vard<-VARd_MC(n=n,t=t,l=l,m=m,CV.l=CV.l,CV.m=CV.m,family="gaussian",alpha=alpha,tot.var=tot.var,
+  vard<-VARd_MC(n=n,t=t,l=l,m=m,CV.l=CV.l,CV.m=CV.m,subcluster="cohort",indiv="cross-sectional",family="gaussian",alpha=alpha,tot.var=tot.var,
                 nsims=1000,seed=9375+k)
   power0<-study_power(delta=delta,var.delta=vard,typeI.error=0.05,df=n-2)
   
@@ -66,7 +68,7 @@ for(k in 1:80){
   CV.l <- scenario$CV.l
   CV.m <- scenario$CV.m
   
-  vard<-VARd_MC(n=n,t=t,l=l,m=m,CV.l=CV.l,CV.m=CV.m,family="binomial",alpha=alpha,delta=delta,beta=beta,phi=1,
+  vard<-VARd_MC(n=n,t=t,l=l,m=m,CV.l=CV.l,CV.m=CV.m,subcluster="cohort",indiv="cross-sectional",family="binomial",alpha=alpha,delta=delta,beta=beta,phi=1,
              nsims=1000,seed=257+k)
   power0<-study_power(delta=delta,var.delta=vard,typeI.error=0.05,df=n-2)
   
