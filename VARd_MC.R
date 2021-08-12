@@ -1,7 +1,7 @@
 ########################################################################################################################
 # Variance of the intervention effect for stepped wedge cluster randomized trials with subclusters
 # and equal or unequal cluster-sizes (between-cluster size imbalance only). 
-# Code based on SWD_GEEPower_cp_variable_v2.R by Zibo Tian and Fan Li, modified by Kendra Davis-Plourde.
+# Code based on SWD_GEEPower_cp_variable_v2.R by Zibo Tian and Fan Li (Tian et al., 2021), modified by Kendra Davis-Plourde.
 
 # INPUT
 # n: Number of clusters (I)
