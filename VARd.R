@@ -1,5 +1,5 @@
-# Approximation of the variance of the intervention effect for multilevel stepped wedge cluster randomized trials 
-# with continuous and binary (with logit link) outcomes.
+# Approximation of the variance of the intervention effect for stepped wedge cluster randomized trials with subclusters
+# and Gaussian or binary (with logit link) outcomes.
 # Created by Kendra Davis-Plourde
 
 # INPUTS

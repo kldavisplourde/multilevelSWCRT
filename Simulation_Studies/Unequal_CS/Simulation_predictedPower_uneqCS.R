@@ -23,7 +23,7 @@
 
 #############################################################
 setwd("/Users/kdavis07/Documents/GitHub/multilevel_crt_samplesize/")
-source("VARd_MC.R")
+source("VARd_CV.R")
 source("study_power.R")
 
 # 1. Gaussian outcome
@@ -42,7 +42,7 @@ for(k in 1:80){
   CV.l <- scenario$CV.l
   CV.m <- scenario$CV.m
   
-  vard<-VARd_MC(n=n,t=t,l=l,m=m,CV.l=CV.l,CV.m=CV.m,subcluster="cohort",indiv="cross-sectional",family="gaussian",alpha=alpha,tot.var=tot.var,
+  vard<-VARd_CV(n=n,t=t,l=l,m=m,CV.l=CV.l,CV.m=CV.m,subcluster="cohort",indiv="cross-sectional",family="gaussian",alpha=alpha,tot.var=tot.var,
                 nsims=1000,seed=9375+k)
   power0<-study_power(delta=delta,var.delta=vard,typeI.error=0.05,df=n-2)
   
@@ -68,7 +68,7 @@ for(k in 1:80){
   CV.l <- scenario$CV.l
   CV.m <- scenario$CV.m
   
-  vard<-VARd_MC(n=n,t=t,l=l,m=m,CV.l=CV.l,CV.m=CV.m,subcluster="cohort",indiv="cross-sectional",family="binomial",alpha=alpha,delta=delta,beta=beta,phi=1,
+  vard<-VARd_CV(n=n,t=t,l=l,m=m,CV.l=CV.l,CV.m=CV.m,subcluster="cohort",indiv="cross-sectional",family="binomial",alpha=alpha,delta=delta,beta=beta,phi=1,
              nsims=1000,seed=257+k)
   power0<-study_power(delta=delta,var.delta=vard,typeI.error=0.05,df=n-2)
   

@@ -1,4 +1,4 @@
-# Generating correlated continuous outcomes under LMM for multilevel stepped wedge trials
+# Generating correlated Gaussian outcomes under LMM for stepped wedge trials with subclusters and fitting LMM.
 # Kendra Davis-Plourde
 
 # INPUTS

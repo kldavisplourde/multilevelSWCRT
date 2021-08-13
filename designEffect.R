@@ -1,4 +1,4 @@
-# Design effect for multilevel cluster randomized trials with a continuous outcome.
+# Design effect for longitudinal cluster randomized trials with subclusters and a Gaussian outcome.
 # Created by Kendra Davis-Plourde
 
 # INPUTS

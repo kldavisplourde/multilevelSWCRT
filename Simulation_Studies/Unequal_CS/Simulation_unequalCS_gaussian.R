@@ -1,4 +1,4 @@
-# Generating correlated continuous outcomes under LMM for multilevel stepped wedge trials with unequal cluster-sizes
+# Generating correlated Gaussian outcomes with specified CVs under LMM for stepped wedge trials with subclusters and fitting LMM.
 # Kendra Davis-Plourde
 
 # INPUTS

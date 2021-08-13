@@ -1,4 +1,4 @@
-# Generating correlated binary outcomes under GLMM for multilevel stepped wedge trials
+# Generating correlated binary outcomes with logit link under GLMM for stepped wedge trials with subclusters and fitting GLMM.
 # Kendra Davis-Plourde
 
 # INPUTS
