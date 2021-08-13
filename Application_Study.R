@@ -9,7 +9,7 @@ setwd("/Users/kdavis07/Documents/GitHub/multilevel_crt_samplesize")
 source("VARd.R")                 #Importing function for generating the variance of the intervention effect 
 source("study_power.R")          #Importing function for generating power
 source("designEffect_SWCRT.R")   #Importing function for generating design effect under stepped wedge design (continuous outcome only)
-source("VARd_MC.R")              #Importing function for generating the variance of the intervention effect under unequal cluster sizes
+source("VARd_CV.R")              #Importing function for generating the variance of the intervention effect under unequal cluster sizes
 ####################################################################################################################################
 ####################################################################################################################################
 
@@ -154,7 +154,7 @@ n0<-seq(90,115,by=5)              #Varying number of clusters (I)
 for(i in 1:length(n0)){
   n<-n0[i]
   df<-n-2                         #Degrees of freedom for t-test
-  vard<-VARd_MC(n=n,t=t,l=l,m=m,CV.l=CV.l,CV.m=CV.m,subcluster="cohort",indiv="cross-sectional",family="gaussian",alpha=alpha,delta=delta,tot.var=tot.var,nsims=1000,seed=3528)
+  vard<-VARd_CV(n=n,t=t,l=l,m=m,CV.l=CV.l,CV.m=CV.m,subcluster="cohort",indiv="cross-sectional",family="gaussian",alpha=alpha,delta=delta,tot.var=tot.var,nsims=1000,seed=3528)
   power0<-study_power(delta=delta,var.delta=vard,typeI.error=ER1,df=df)
   
   if(i==1) {
@@ -177,7 +177,7 @@ for(i in 1:length(CV.l0)){
   CV.l<-CV.l0[i] 
   for(j in 1:length(CV.m0)){
     CV.m<-CV.m0[j] 
-    vard<-VARd_MC(n=n,t=t,l=l,m=m,CV.l=CV.l,CV.m=CV.m,subcluster="cohort",indiv="cross-sectional",family="gaussian",alpha=alpha,delta=delta,tot.var=tot.var,nsims=1000,seed=3528)
+    vard<-VARd_CV(n=n,t=t,l=l,m=m,CV.l=CV.l,CV.m=CV.m,subcluster="cohort",indiv="cross-sectional",family="gaussian",alpha=alpha,delta=delta,tot.var=tot.var,nsims=1000,seed=3528)
     power0<-study_power(delta=delta,var.delta=vard,typeI.error=ER1,df=df)
     power<-c(power,power0)
   }
@@ -405,7 +405,7 @@ n0<-seq(12,32,by=4)                   #Varying number of clusters (I)
 for(i in 1:length(n0)){
   n<-n0[i]
   df<-n-2                             #Degrees of freedom for t-test
-  vard<-VARd_MC(n=n,t=t,l=l,m=m,CV.l=CV.l,CV.m=CV.m,subcluster="cohort",indiv="cross-sectional",family="binomial",alpha=alpha,delta=delta,beta=beta,phi=phi,nsims=1000,seed=8259)
+  vard<-VARd_CV(n=n,t=t,l=l,m=m,CV.l=CV.l,CV.m=CV.m,subcluster="cohort",indiv="cross-sectional",family="binomial",alpha=alpha,delta=delta,beta=beta,phi=phi,nsims=1000,seed=8259)
   power0<-study_power(delta=delta,var.delta=vard,typeI.error=ER1,df=df)
   
   if(i==1) {
@@ -428,7 +428,7 @@ for(i in 1:length(CV.l0)){
   CV.l<-CV.l0[i] 
   for(j in 1:length(CV.m0)){
     CV.m<-CV.m0[j] 
-    vard<-VARd_MC(n=n,t=t,l=l,m=m,CV.l=CV.l,CV.m=CV.m,subcluster="cohort",indiv="cross-sectional",family="binomial",alpha=alpha,delta=delta,beta=beta,phi=phi,nsims=1000,seed=8259)
+    vard<-VARd_CV(n=n,t=t,l=l,m=m,CV.l=CV.l,CV.m=CV.m,subcluster="cohort",indiv="cross-sectional",family="binomial",alpha=alpha,delta=delta,beta=beta,phi=phi,nsims=1000,seed=8259)
     power0<-study_power(delta=delta,var.delta=vard,typeI.error=ER1,df=df)
     power<-c(power,power0)
   }
