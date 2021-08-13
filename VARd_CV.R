@@ -26,7 +26,7 @@
 # seed: a seed to control reproducible output
 ########################################################################################################################
 
-VARd_MC <- function(n, t, l, m, CV.l=0, CV.m=0, subcluster=c("cohort","cross-sectional"),indiv=c("cohort","cross-sectional"), family=c("gaussian","binomial"), alpha, delta=NA, beta=rep(0, t), phi=1, tot.var=1, nsims=1000, seed=2021){
+VARd_CV <- function(n, t, l, m, CV.l=0, CV.m=0, subcluster=c("cohort","cross-sectional"),indiv=c("cohort","cross-sectional"), family=c("gaussian","binomial"), alpha, delta=NA, beta=rep(0, t), phi=1, tot.var=1, nsims=1000, seed=2021){
   
   # elements of efficiency calculation
   scheme<-rep(n/(t-1),t-1)
