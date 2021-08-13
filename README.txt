@@ -14,3 +14,4 @@ List of Files:
 
 NOTES:  1) This program requires you to install the MASS package. Simulation files additionally require the installation of the lme4, foreach, doMC, and doRNG packages.
 	2) You will need to change path names before running the programs.
+	3) Latest version of all files are available on GitHub: https://github.com/kldavisplourde/multilevelSWCRT
