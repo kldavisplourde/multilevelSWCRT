@@ -1,4 +1,4 @@
-# Application study from "Sample size considerations for stepped wedge designs with multiple levels of clustering" 
+# Application study from "Sample size considerations for stepped wedge designs with subclusters" 
 # by Kendra Davis-Plourde, Monica Taljaard, and Fan Li
 # Code created by Kendra Davis-Plourde
 
