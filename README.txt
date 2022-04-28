@@ -12,6 +12,7 @@ List of Files:
 9) Simulation_unequalCS_binomial.r = R file for simulating and fitting SW-CRTs with subclusters under a binary outcome with logit link and taking into account CVs in terms of the number of subclusters and subcluster sizes.
 10) Application_Study.r = R file for producing power and sample size estimates for two SW-CRTs with subclusters, the LIRE trial and the Washington State EPT trial.
 
-NOTES:  1) This program requires you to install the MASS package. Simulation files additionally require the installation of the lme4, foreach, doMC, and doRNG packages.
+NOTES:  1) This program requires the MASS package (comes preloaded into R so does not require installation). Simulation files additionally require the installation of the lme4, foreach, doMC, and doRNG packages.
 	2) You will need to change path names before running the programs.
 	3) Latest version of all files are available on GitHub: https://github.com/kldavisplourde/multilevelSWCRT
+	4) R Shiny App for the SW-CRT design effect: https://kendra-davis-plourde.shinyapps.io/SWCRT_3Level_DesignEffect/
