@@ -16,3 +16,5 @@ NOTES:  1) This program requires the MASS package (comes preloaded into R so doe
 	2) You will need to change path names before running the programs.
 	3) Latest version of all files are available on GitHub: https://github.com/kldavisplourde/multilevelSWCRT
 	4) R Shiny App for the SW-CRT design effect: https://kendra-davis-plourde.shinyapps.io/SWCRT_3Level_DesignEffect/
+
+This work is supported by the National Institute of Aging (NIA) of the National Institutes of Health (NIH) under Award Number U54AG063546, which funds NIA Imbedded Pragmatic Alzheimer's Disease and AD-Related Dementias Clinical Trials Collaboratory (NIA IMPACT Collaboratory). The content is solely the responsibility of the authors and does not necessarily represent the official views of the NIH. The authors are grateful to Professor Jim Hughes for providing data and information from the Washington State EPT trial. We also thank the associate editor and an anonymous referee for their valuable suggestions, which greatly improved the exposition of this work.
